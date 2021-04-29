@@ -3,7 +3,7 @@ package dan.tp2021.productos.domain;
 import java.time.Instant;
 
 public class MovimientosStock {
-	
+	//Aca no tendria que ir una Provision y sacar ambos detalles? segun el enunciado, cada movimiento de stock conoce que provision lo creo.
 	private Integer id;
 	private DetallePedido detallePedido;
 	private DetalleProvision detalleProvision;

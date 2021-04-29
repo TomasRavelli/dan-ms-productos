@@ -1,5 +1,6 @@
 package dan.tp2021.productos.domain;
 
+//Esta clase es necesaria?
 public class DetallePedido {
 	private Integer id;
 	private Material material;
