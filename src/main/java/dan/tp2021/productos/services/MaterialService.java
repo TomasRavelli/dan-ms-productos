@@ -9,11 +9,11 @@ import dan.tp2021.productos.domain.Material;
 
 @Service
 public interface MaterialService {
-	ResponseEntity<List<Material>> getListaMateriales();
-	ResponseEntity<List<Material>> getMaterialesByNombre(String nombre);
-	ResponseEntity<List<Material>> getMaterialesByDescripcion(String desc);
-	ResponseEntity<Material> getMaterialById(Integer id);
-	ResponseEntity<Material> saveMaterial(Material m);
-	ResponseEntity<Material> deleteMaterialById(Integer id);
+	public ResponseEntity<List<Material>> getListaMateriales();
+	public ResponseEntity<List<Material>> getMaterialesByNombre(String nombre);
+	public ResponseEntity<List<Material>> getMaterialesByDescripcion(String desc);
+	public ResponseEntity<Material> getMaterialById(Integer id);
+	public ResponseEntity<Material> saveMaterial(Material m);
+	public ResponseEntity<Material> deleteMaterialById(Integer id);
 	
 }
