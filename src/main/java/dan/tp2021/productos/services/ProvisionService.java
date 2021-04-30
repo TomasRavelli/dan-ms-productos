@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.domain.Provision;
 
-@Service
+
 public interface ProvisionService {
 	public ResponseEntity<Provision> getProvisionById(Integer id);
 	public ResponseEntity<List<Provision>> getListaProvisiones();

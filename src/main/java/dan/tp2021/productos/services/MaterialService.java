@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.domain.Material;
 
-@Service
+
 public interface MaterialService {
 	public ResponseEntity<List<Material>> getListaMateriales();
 	public ResponseEntity<List<Material>> getMaterialesByNombre(String nombre);

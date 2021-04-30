@@ -5,14 +5,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+import dan.tp2021.productos.dao.ProvisionInMemoryRepository;
 import dan.tp2021.productos.domain.Provision;
 import frsf.isi.dan.InMemoryRepository;
 
+@Service
 public class ProvisionServiceImpl implements ProvisionService {
 
 	@Autowired
-	InMemoryRepository<Provision> inMemoryRepository;
+	ProvisionInMemoryRepository inMemoryRepository;
 	
 	@Override
 	public ResponseEntity<Provision> getProvisionById(Integer id) {

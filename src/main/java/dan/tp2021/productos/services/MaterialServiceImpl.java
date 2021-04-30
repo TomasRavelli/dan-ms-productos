@@ -6,14 +6,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+import dan.tp2021.productos.dao.MaterialInMemoryRepository;
 import dan.tp2021.productos.domain.Material;
 import frsf.isi.dan.InMemoryRepository;
 
+@Service
 public class MaterialServiceImpl implements MaterialService {
 
 	@Autowired
-	InMemoryRepository<Material> inMemoryRepository;
+	MaterialInMemoryRepository inMemoryRepository;
 
 	@Override
 	public ResponseEntity<List<Material>> getListaMateriales() {

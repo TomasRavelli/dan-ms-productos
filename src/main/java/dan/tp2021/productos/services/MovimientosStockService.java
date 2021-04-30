@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.domain.MovimientosStock;
 
-@Service
+
 public interface MovimientosStockService {
 	
 	public ResponseEntity<MovimientosStock> getMovimientoStockById(Integer id);
