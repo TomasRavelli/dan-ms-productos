@@ -56,24 +56,26 @@ public class MaterialRest {
 			@RequestParam(required = false, name = "nombre", defaultValue = "") String nombre,
 			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion) {
 
-		List<Material> resultado = new ArrayList<>();
 		try {
-			if (nombre.isEmpty() && descripcion.isEmpty()) {
-
-				return materialServiceImpl.getListaMateriales();
+			if (!nombre.isBlank() && !descripcion.isBlank()) {
+				return materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
 			} else {
-				if (!nombre.isEmpty()) {
-					resultado.addAll(materialServiceImpl.getMaterialesByNombre(nombre).getBody());
+				if (!nombre.isBlank()) {
+					return materialServiceImpl.getMaterialesByNombre(nombre);
 				}
-				if (!descripcion.isEmpty()) {
-					resultado.addAll(materialServiceImpl.getMaterialesByDescripcion(descripcion).getBody());
+				else {
+					if(!descripcion.isBlank()) {
+						return materialServiceImpl.getMaterialesByDescripcion(descripcion);
+					}
+					else {
+						return materialServiceImpl.getListaMateriales();
+					}
 				}
 			}
 		} catch (Exception e) {
+		
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-
-		return ResponseEntity.ok(resultado);
 	}
 
 	@PostMapping()
@@ -112,15 +114,15 @@ public class MaterialRest {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@DeleteMapping(path = "/{id}")
+	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Borrar un material por su id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Actualizado correctamente"),
 			@ApiResponse(code = 401, message = "No autorizado"), @ApiResponse(code = 403, message = "Prohibido"),
 			@ApiResponse(code = 404, message = "El ID no existe") })
-	public ResponseEntity<Material> deleteMaterial(@PathVariable Integer idMaterial) {
+	public ResponseEntity<Material> deleteMaterial(@PathVariable Integer id) {
 
 		try {
-			return materialServiceImpl.deleteMaterialById(idMaterial);
+			return materialServiceImpl.deleteMaterialById(id);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,22 @@ public class MovimientosStockRest {
 	@Autowired
 	MovimientosStockService movimientosStockServiceImpl;
 
+	@PostMapping
+	@ApiOperation(value = "Crear un nuevo movimiento stock.")
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Movimiento creado correctamente"),
+			@ApiResponse(code = 401, message = "No autorizado"), 
+			@ApiResponse(code = 403, message = "Prohibido"),
+			@ApiResponse(code = 404, message = "El ID no existe") })
+	public ResponseEntity<MovimientosStock> saveMovStock(@RequestBody MovimientosStock ms) {
+
+		try {
+			return movimientosStockServiceImpl.saveMovimientoStock(ms);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
 	@GetMapping(path = "/{id}")
 	@ApiOperation(value = "Obtener movimiento stock por su id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Se obtuvo movimiento correctamente"),
@@ -71,10 +88,10 @@ public class MovimientosStockRest {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Se elimino el movimiento correctamente"),
 			@ApiResponse(code = 401, message = "No autorizado"), @ApiResponse(code = 403, message = "Prohibido"),
 			@ApiResponse(code = 404, message = "El ID no existe") })
-	public ResponseEntity<MovimientosStock> deleteMovimientoStock(@PathVariable Integer idMaterial) {
+	public ResponseEntity<MovimientosStock> deleteMovimientoStock(@PathVariable Integer id) {
 
 		try {
-			return movimientosStockServiceImpl.deleteMovimientoStockById(idMaterial);
+			return movimientosStockServiceImpl.deleteMovimientoStockById(id);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -88,11 +105,11 @@ public class MovimientosStockRest {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Se actualizo el movimiento correctamente"),
 			@ApiResponse(code = 401, message = "No autorizado"), @ApiResponse(code = 403, message = "Prohibido"),
 			@ApiResponse(code = 404, message = "El ID no existe") })
-	public ResponseEntity<List<MovimientosStock>> updateMovimientoStock(@RequestBody MovimientosStock ms) {
+	public ResponseEntity<MovimientosStock> updateMovimientoStock(@RequestBody MovimientosStock ms) {
 
 		if (ms.getId() != null) {
 			try {
-				movimientosStockServiceImpl.saveMovimientoStock(ms);
+				return movimientosStockServiceImpl.saveMovimientoStock(ms);
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}

@@ -39,7 +39,7 @@ public class ProvisionRest {
 
 		if (provision != null && provision.getDetalle() != null && provision.getDetalle().size() > 0) {
 			try {
-				provisionServiceImpl.saveProvision(provision);
+				return provisionServiceImpl.saveProvision(provision);
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
@@ -57,7 +57,7 @@ public class ProvisionRest {
 
 		if (provision.getId() != null) {
 			try {
-				provisionServiceImpl.saveProvision(provision);
+				return provisionServiceImpl.saveProvision(provision);
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}

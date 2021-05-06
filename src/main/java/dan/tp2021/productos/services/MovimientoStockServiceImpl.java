@@ -51,9 +51,12 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 	@Override
 	public ResponseEntity<MovimientosStock> saveMovimientoStock(MovimientosStock ms) {
 		
+		
 		if(ms.getId() != null && !inMemoryRepository.existsById(ms.getId())) {
+			
 			return ResponseEntity.notFound().build();
 		}
+	
 		return ResponseEntity.ok(inMemoryRepository.save(ms));
 	}
 

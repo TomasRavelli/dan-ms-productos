@@ -15,5 +15,6 @@ public interface MaterialService {
 	public ResponseEntity<Material> getMaterialById(Integer id);
 	public ResponseEntity<Material> saveMaterial(Material m);
 	public ResponseEntity<Material> deleteMaterialById(Integer id);
+	public ResponseEntity<List<Material>> getListaMaterialesByParams(String nombre, String descripcion);
 	
 }
