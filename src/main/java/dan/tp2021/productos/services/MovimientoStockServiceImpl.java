@@ -2,15 +2,13 @@ package dan.tp2021.productos.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.MovimientosStockInMemoryRepository;
 import dan.tp2021.productos.domain.MovimientosStock;
-import frsf.isi.dan.InMemoryRepository;
 
 @Service
 public class MovimientoStockServiceImpl implements MovimientosStockService {
@@ -19,23 +17,29 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 	MovimientosStockInMemoryRepository inMemoryRepository;
 
 	@Override
-	public ResponseEntity<MovimientosStock> getMovimientoStockById(Integer id) {
+	public MovimientosStock getMovimientoStockById(Integer id) throws MovimientosStockException {
 
-		return ResponseEntity.of(inMemoryRepository.findById(id));
+		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
+
+		if(!find.isPresent()){
+			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
+		}
+
+		return find.get();
 	}
 
 	@Override
-	public ResponseEntity<List<MovimientosStock>> getListaMovimientos() {
+	public List<MovimientosStock> getListaMovimientos() {
 
 		List<MovimientosStock> resultado = new ArrayList<>();
 
 		inMemoryRepository.findAll().forEach(ms -> resultado.add(ms));
 
-		return ResponseEntity.ok(resultado);
+		return resultado;
 	}
 
 	@Override
-	public ResponseEntity<List<MovimientosStock>> getMovimientosByMaterial(Integer materialId) {
+	public List<MovimientosStock> getMovimientosByMaterial(Integer materialId) {
 
 		List<MovimientosStock> resultado = new ArrayList<>();
 
@@ -44,33 +48,34 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 				resultado.add(ms);
 		});
 
-		return ResponseEntity.ok(resultado);
+		return resultado;
 	
 	}
 
 	@Override
-	public ResponseEntity<MovimientosStock> saveMovimientoStock(MovimientosStock ms) {
+	public MovimientosStock saveMovimientoStock(MovimientosStock ms) throws MovimientosStockException {
 		
 		
 		if(ms.getId() != null && !inMemoryRepository.existsById(ms.getId())) {
 			
-			return ResponseEntity.notFound().build();
+			throw new MovimientosStockNotFoundException("");
 		}
 	
-		return ResponseEntity.ok(inMemoryRepository.save(ms));
+		return inMemoryRepository.save(ms);
 	}
 
 	@Override
-	public ResponseEntity<MovimientosStock> deleteMovimientoStockById(Integer id) {
-		
-		try{
-			inMemoryRepository.deleteById(id);
+	public MovimientosStock deleteMovimientoStockById(Integer id) throws MovimientosStockException {
+
+		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
+
+		if(!find.isPresent()){
+			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
 		}
-		catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		} 
+
+		inMemoryRepository.deleteById(id);
 		
-		return ResponseEntity.ok().build();
+		return find.get();
 	}
 
 }

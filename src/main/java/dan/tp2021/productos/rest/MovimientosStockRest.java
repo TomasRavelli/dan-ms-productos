@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dan.tp2021.productos.domain.Material;
 import dan.tp2021.productos.domain.MovimientosStock;
 import dan.tp2021.productos.services.MovimientosStockService;
 import io.swagger.annotations.Api;
@@ -41,7 +40,10 @@ public class MovimientosStockRest {
 	public ResponseEntity<MovimientosStock> saveMovStock(@RequestBody MovimientosStock ms) {
 
 		try {
-			return movimientosStockServiceImpl.saveMovimientoStock(ms);
+			MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
+			return ResponseEntity.ok(resultado);
+		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -55,7 +57,10 @@ public class MovimientosStockRest {
 	public ResponseEntity<MovimientosStock> getMovimientoStockById(@PathVariable Integer id) {
 
 		try {
-			return movimientosStockServiceImpl.getMovimientoStockById(id);
+			MovimientosStock resultado = movimientosStockServiceImpl.getMovimientoStockById(id);
+			return ResponseEntity.ok(resultado);
+		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -72,9 +77,11 @@ public class MovimientosStockRest {
 
 		try {
 			if (idMaterial > 0) {
-				return movimientosStockServiceImpl.getMovimientosByMaterial(idMaterial);
+				List<MovimientosStock> resultado = movimientosStockServiceImpl.getMovimientosByMaterial(idMaterial);
+				return ResponseEntity.ok(resultado);
 			}
-			return movimientosStockServiceImpl.getListaMovimientos();
+			List<MovimientosStock> resultado = movimientosStockServiceImpl.getListaMovimientos();
+			return ResponseEntity.ok(resultado);
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -91,7 +98,10 @@ public class MovimientosStockRest {
 	public ResponseEntity<MovimientosStock> deleteMovimientoStock(@PathVariable Integer id) {
 
 		try {
-			return movimientosStockServiceImpl.deleteMovimientoStockById(id);
+			MovimientosStock resultado = movimientosStockServiceImpl.deleteMovimientoStockById(id);
+			return ResponseEntity.ok(resultado);
+		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -109,7 +119,10 @@ public class MovimientosStockRest {
 
 		if (ms.getId() != null) {
 			try {
-				return movimientosStockServiceImpl.saveMovimientoStock(ms);
+				MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
+				return ResponseEntity.ok(resultado);
+			} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
