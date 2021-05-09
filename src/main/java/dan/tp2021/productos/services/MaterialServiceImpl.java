@@ -2,6 +2,7 @@ package dan.tp2021.productos.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.MaterialInMemoryRepository;
 import dan.tp2021.productos.domain.Material;
-import frsf.isi.dan.InMemoryRepository;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
@@ -19,66 +19,77 @@ public class MaterialServiceImpl implements MaterialService {
 	MaterialInMemoryRepository inMemoryRepository;
 
 	@Override
-	public ResponseEntity<List<Material>> getListaMateriales() {
+	public List<Material> getListaMateriales() {
 
 		List<Material> resultado = new ArrayList<Material>();
 		inMemoryRepository.findAll().forEach(m -> resultado.add(m));
-		return ResponseEntity.ok(resultado);
+		return resultado;
 	}
 
 	@Override
-	public ResponseEntity<List<Material>> getMaterialesByNombre(String nombre) {
+	public List<Material> getMaterialesByNombre(String nombre) {
 
 		List<Material> resultado = new ArrayList<Material>();
 		inMemoryRepository.findAll().forEach(m -> {
 			if (m.getNombre().contains(nombre))
 				resultado.add(m);
 		});
-		return ResponseEntity.ok(resultado);
+		return resultado;
 	}
 
 	@Override
-	public ResponseEntity<List<Material>> getMaterialesByDescripcion(String desc) {
+	public List<Material> getMaterialesByDescripcion(String desc) {
 		List<Material> resultado = new ArrayList<Material>();
 		inMemoryRepository.findAll().forEach(m -> {
 			if (m.getDescripcion().contains(desc))
 				resultado.add(m);
 		});
-		return ResponseEntity.ok(resultado);
+		return resultado;
 
 	}
 
 	@Override
-	public ResponseEntity<Material> getMaterialById(Integer id) {
+	public Material getMaterialById(Integer id) throws MaterialException {
 
-		return ResponseEntity.of(inMemoryRepository.findById(id));
+		Optional<Material> respuesta = inMemoryRepository.findById(id);
+		if(respuesta.isPresent()) {
+			return respuesta.get();
+		}
+
+		throw new MaterialNotFoundException("No se encontró el material con id: " + id);
+
 	}
 
 	@Override
-	public ResponseEntity<Material> saveMaterial(Material m) {
+	public Material saveMaterial(Material m) throws MaterialException {
 
 		if (m.getId() != null && !inMemoryRepository.existsById(m.getId())) {
 			// Por si busca actualizar un material que no existe.
-			return ResponseEntity.badRequest().build();
+			throw new MaterialNotFoundException("No se encontró el material con id: " + m.getId());
 
 		}
 
-		return ResponseEntity.ok(inMemoryRepository.save(m));
+		return inMemoryRepository.save(m);
 
 	}
 
 	@Override
-	public ResponseEntity<Material> deleteMaterialById(Integer id) {
+	public Material deleteMaterialById(Integer id) throws MaterialException {
+
+		Optional<Material> find = inMemoryRepository.findById(id);
+		if(!find.isPresent()){
+			throw new MaterialNotFoundException("No se encontró el material con id: " + id);
+		}
 		try {
 			inMemoryRepository.deleteById(id);
 		} catch (Exception e) {
-			return ResponseEntity.notFound().build();
+			throw new MaterialException("");
 		}
-		return ResponseEntity.status(HttpStatus.OK).build();
+		return find.get();
 	}
 
 	@Override
-	public ResponseEntity<List<Material>> getListaMaterialesByParams(String nombre, String descripcion) {
+	public List<Material> getListaMaterialesByParams(String nombre, String descripcion) throws MaterialException {
 		List<Material> resultado = new ArrayList<Material>();
 		try {
 			inMemoryRepository.findAll().forEach(m -> {
@@ -86,9 +97,9 @@ public class MaterialServiceImpl implements MaterialService {
 					resultado.add(m);
 			});
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			throw new MaterialException("");
 		}
-		return ResponseEntity.ok(resultado);
+		return resultado;
 	}
 
 }
