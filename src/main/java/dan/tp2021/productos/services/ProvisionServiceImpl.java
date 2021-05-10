@@ -2,14 +2,13 @@ package dan.tp2021.productos.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.ProvisionInMemoryRepository;
 import dan.tp2021.productos.domain.Provision;
-import frsf.isi.dan.InMemoryRepository;
 
 @Service
 public class ProvisionServiceImpl implements ProvisionService {
@@ -18,35 +17,43 @@ public class ProvisionServiceImpl implements ProvisionService {
 	ProvisionInMemoryRepository inMemoryRepository;
 	
 	@Override
-	public ResponseEntity<Provision> getProvisionById(Integer id) {
+	public Provision getProvisionById(Integer id) throws ProvisionException {
+
+		Optional<Provision> find = inMemoryRepository.findById(id);
+
+		if(!find.isPresent()){
+			throw new ProvisionNotFoundException("No se pudo encontrar la provisión con id: " + id);
+		}
 		
-		return ResponseEntity.of(inMemoryRepository.findById(id));
+		return find.get();
 	}
 
 	@Override
-	public ResponseEntity<List<Provision>> getListaProvisiones() {
+	public List<Provision> getListaProvisiones() {
 		List<Provision> resultado = new ArrayList<>();
 		inMemoryRepository.findAll().forEach(p -> resultado.add(p));
-		return ResponseEntity.ok(resultado);
+		return resultado;
 	}
 
 	@Override
-	public ResponseEntity<Provision> saveProvision(Provision p) {
+	public Provision saveProvision(Provision p) throws ProvisionException {
 		if(p.getId() != null && !inMemoryRepository.existsById(p.getId())) {
-			return ResponseEntity.notFound().build();
+			throw new ProvisionNotFoundException("");
 		}
-		return ResponseEntity.ok(inMemoryRepository.save(p));
+		return inMemoryRepository.save(p);
 	}
 
 	@Override
-	public ResponseEntity<Provision> deleteProvisionById(Integer id) {
-		try {
-			inMemoryRepository.deleteById(id);
-			return ResponseEntity.ok().build();
-		} catch (Exception e) {
-			//Que pasa si no encuentra el id?
-			return ResponseEntity.notFound().build();
+	public Provision deleteProvisionById(Integer id) throws ProvisionException {
+
+		Optional<Provision> find = inMemoryRepository.findById(id);
+
+		if(!find.isPresent()){
+			throw new ProvisionNotFoundException("No se pudo encontrar la provisión con id: " + id);
 		}
+
+		inMemoryRepository.deleteById(id);
+		return find.get();
 	
 	}
 
