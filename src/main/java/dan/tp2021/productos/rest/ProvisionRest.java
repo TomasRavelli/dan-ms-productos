@@ -39,7 +39,10 @@ public class ProvisionRest {
 
 		if (provision != null && provision.getDetalle() != null && provision.getDetalle().size() > 0) {
 			try {
-				return provisionServiceImpl.saveProvision(provision);
+				Provision resultado =  provisionServiceImpl.saveProvision(provision);
+				return ResponseEntity.ok(resultado);
+			} catch (ProvisionService.ProvisionNotFoundException e){
+				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
@@ -57,7 +60,10 @@ public class ProvisionRest {
 
 		if (provision.getId() != null) {
 			try {
-				return provisionServiceImpl.saveProvision(provision);
+				Provision resultado =  provisionServiceImpl.saveProvision(provision);
+				return ResponseEntity.ok(resultado);
+			} catch (ProvisionService.ProvisionNotFoundException e){
+				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
@@ -74,7 +80,10 @@ public class ProvisionRest {
 	public ResponseEntity<Provision> deleteProvision(@PathVariable Integer id) {
 
 		try {
-			return provisionServiceImpl.deleteProvisionById(id);
+			Provision resultado = provisionServiceImpl.deleteProvisionById(id);
+			return ResponseEntity.ok(resultado);
+		} catch (ProvisionService.ProvisionNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -89,7 +98,10 @@ public class ProvisionRest {
 	public ResponseEntity<Provision> getProvisionById(@PathVariable Integer id) {
 
 		try {
-			return provisionServiceImpl.getProvisionById(id);
+			Provision resultado = provisionServiceImpl.getProvisionById(id);
+			return ResponseEntity.ok(resultado);
+		} catch (ProvisionService.ProvisionNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -104,7 +116,8 @@ public class ProvisionRest {
 	public ResponseEntity<List<Provision>> getProvisiones() {
 
 		try {
-			return provisionServiceImpl.getListaProvisiones();
+			List<Provision> resultado = provisionServiceImpl.getListaProvisiones();
+			return ResponseEntity.ok(resultado);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
