@@ -1,5 +1,6 @@
 package dan.tp2021.productos.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.Material;
 import dan.tp2021.productos.services.MaterialService;
+import dan.tp2021.productos.services.MaterialServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -58,24 +60,14 @@ public class MaterialRest {
 			@RequestParam(required = false, name = "nombre", defaultValue = "") String nombre,
 			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion) {
 
+		List<Material> lista = new ArrayList<>();
 		try {
-			//TODO esta comprobación la podría hacer el service y llamar a los otros métodos según necesite...
-			if (!nombre.isBlank() && !descripcion.isBlank()) {
-				List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
+			
+			lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
+			if(!lista.isEmpty()) {
 				return ResponseEntity.ok(lista);
 			}
-			if (!nombre.isBlank()) {
-				List<Material> lista = materialServiceImpl.getMaterialesByNombre(nombre);
-				return ResponseEntity.ok(lista);
-			}
-
-			if (!descripcion.isBlank()) {
-				List<Material> lista = materialServiceImpl.getMaterialesByDescripcion(descripcion);
-				return ResponseEntity.ok(lista);
-			}
-
-			List<Material> lista = materialServiceImpl.getListaMateriales();
-			return ResponseEntity.ok(lista);
+			throw new MaterialService.MaterialNotFoundException("No se encontraron materiales que cumplan con estos criterios.");
 		} catch (Exception e) {
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

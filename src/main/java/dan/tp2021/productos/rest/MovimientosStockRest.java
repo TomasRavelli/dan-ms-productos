@@ -75,14 +75,13 @@ public class MovimientosStockRest {
 	public ResponseEntity<List<MovimientosStock>> getMovimientosStock(
 			@RequestParam(name = "idMaterial", required = false, defaultValue = "0") Integer idMaterial) {
 
+		List<MovimientosStock> resultado;
 		try {
-			if (idMaterial > 0) {
-				List<MovimientosStock> resultado = movimientosStockServiceImpl.getMovimientosByMaterial(idMaterial);
+			resultado = movimientosStockServiceImpl.getListaMovimientos(idMaterial);
+			if(!resultado.isEmpty()) {
 				return ResponseEntity.ok(resultado);
 			}
-			List<MovimientosStock> resultado = movimientosStockServiceImpl.getListaMovimientos();
-			return ResponseEntity.ok(resultado);
-
+			throw new MovimientosStockService.MovimientosStockNotFoundException("No se encontraron movimientos que coincidan con estso criterios");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}

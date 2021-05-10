@@ -21,7 +21,7 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 
 		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
 
-		if(find.isEmpty()){
+		if (find.isEmpty()) {
 			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
 		}
 
@@ -29,12 +29,15 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 	}
 
 	@Override
-	public List<MovimientosStock> getListaMovimientos() {
+	public List<MovimientosStock> getListaMovimientos(Integer idMaterial) {
 
 		List<MovimientosStock> resultado = new ArrayList<>();
-
+		
+		if (idMaterial > 0) {
+			resultado.addAll(getMovimientosByMaterial(idMaterial));
+			return resultado;
+		}
 		inMemoryRepository.findAll().forEach(ms -> resultado.add(ms));
-
 		return resultado;
 	}
 
@@ -49,18 +52,17 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 		});
 
 		return resultado;
-	
+
 	}
 
 	@Override
 	public MovimientosStock saveMovimientoStock(MovimientosStock ms) throws MovimientosStockException {
-		
-		
-		if(ms.getId() != null && !inMemoryRepository.existsById(ms.getId())) {
-			
+
+		if (ms.getId() != null && !inMemoryRepository.existsById(ms.getId())) {
+
 			throw new MovimientosStockNotFoundException("");
 		}
-	
+
 		return inMemoryRepository.save(ms);
 	}
 
@@ -69,12 +71,12 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 
 		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
 
-		if(find.isEmpty()){
+		if (find.isEmpty()) {
 			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
 		}
 
 		inMemoryRepository.deleteById(id);
-		
+
 		return find.get();
 	}
 

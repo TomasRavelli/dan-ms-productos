@@ -50,7 +50,7 @@ public class MaterialServiceImpl implements MaterialService {
 	public Material getMaterialById(Integer id) throws MaterialException {
 
 		Optional<Material> respuesta = inMemoryRepository.findById(id);
-		if(respuesta.isPresent()) {
+		if (respuesta.isPresent()) {
 			return respuesta.get();
 		}
 
@@ -75,7 +75,7 @@ public class MaterialServiceImpl implements MaterialService {
 	public Material deleteMaterialById(Integer id) throws MaterialException {
 
 		Optional<Material> find = inMemoryRepository.findById(id);
-		if(find.isEmpty()){
+		if (find.isEmpty()) {
 			throw new MaterialNotFoundException("No se encontró el material con id: " + id);
 		}
 		try {
@@ -88,16 +88,35 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<Material> getListaMaterialesByParams(String nombre, String descripcion) throws MaterialException {
+		
 		List<Material> resultado = new ArrayList<>();
-		try {
-			inMemoryRepository.findAll().forEach(m -> {
-				if (m.getDescripcion().contains(descripcion) || m.getNombre().contains(nombre))
-					resultado.add(m);
-			});
-		} catch (Exception e) {
-			throw new MaterialException("");
+
+		if (!nombre.isBlank() && !descripcion.isBlank()) {
+			List<Material> resultadoAux = new ArrayList<>();
+			try {
+				inMemoryRepository.findAll().forEach(m -> {
+					if (m.getDescripcion().contains(descripcion) || m.getNombre().contains(nombre))
+						resultadoAux.add(m);
+				});
+			} catch (Exception e) {
+				throw new MaterialException("");
+			}
+			return resultadoAux;
 		}
+		
+		if (!nombre.isBlank()) {
+			resultado = this.getMaterialesByNombre(nombre);
+			return resultado;
+		}
+
+		if (!descripcion.isBlank()) {
+			resultado = this.getMaterialesByDescripcion(descripcion);
+			return resultado;
+		}
+
+		resultado = this.getListaMateriales();
 		return resultado;
+
 	}
 
 }

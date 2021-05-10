@@ -7,8 +7,8 @@ import dan.tp2021.productos.domain.Material;
 
 public interface MaterialService {
 
-	class MaterialException extends Exception { MaterialException(String message){super(message);}}
-	class MaterialNotFoundException extends MaterialException {MaterialNotFoundException(String message){super(message);}}
+	public class MaterialException extends Exception { MaterialException(String message){super(message);}}
+	public class MaterialNotFoundException extends MaterialException {public MaterialNotFoundException(String message){super(message);}}
 
 	List<Material> getListaMateriales();
 	List<Material> getMaterialesByNombre(String nombre);
