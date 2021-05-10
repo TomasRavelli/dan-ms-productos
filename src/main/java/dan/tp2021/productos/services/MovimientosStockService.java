@@ -10,9 +10,9 @@ public interface MovimientosStockService {
 	class MovimientosStockException extends Exception { MovimientosStockException(String message){super(message);}}
 	class MovimientosStockNotFoundException extends MovimientosStockException {MovimientosStockNotFoundException(String message){super(message);}}
 	
-	public MovimientosStock getMovimientoStockById(Integer id) throws MovimientosStockException;
-	public List<MovimientosStock> getListaMovimientos();
-	public List<MovimientosStock> getMovimientosByMaterial(Integer materialId);
-	public MovimientosStock saveMovimientoStock(MovimientosStock ms) throws MovimientosStockException;
-	public MovimientosStock deleteMovimientoStockById(Integer id) throws MovimientosStockException;
+	MovimientosStock getMovimientoStockById(Integer id) throws MovimientosStockException;
+	List<MovimientosStock> getListaMovimientos();
+	List<MovimientosStock> getMovimientosByMaterial(Integer materialId);
+	MovimientosStock saveMovimientoStock(MovimientosStock ms) throws MovimientosStockException;
+	MovimientosStock deleteMovimientoStockById(Integer id) throws MovimientosStockException;
 }

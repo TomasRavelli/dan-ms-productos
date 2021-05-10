@@ -21,7 +21,7 @@ public class ProvisionServiceImpl implements ProvisionService {
 
 		Optional<Provision> find = inMemoryRepository.findById(id);
 
-		if(!find.isPresent()){
+		if(find.isEmpty()){
 			throw new ProvisionNotFoundException("No se pudo encontrar la provisión con id: " + id);
 		}
 		
@@ -48,7 +48,7 @@ public class ProvisionServiceImpl implements ProvisionService {
 
 		Optional<Provision> find = inMemoryRepository.findById(id);
 
-		if(!find.isPresent()){
+		if(find.isEmpty()){
 			throw new ProvisionNotFoundException("No se pudo encontrar la provisión con id: " + id);
 		}
 

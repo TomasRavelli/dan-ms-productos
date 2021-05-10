@@ -10,12 +10,12 @@ public interface MaterialService {
 	class MaterialException extends Exception { MaterialException(String message){super(message);}}
 	class MaterialNotFoundException extends MaterialException {MaterialNotFoundException(String message){super(message);}}
 
-	public List<Material> getListaMateriales();
-	public List<Material> getMaterialesByNombre(String nombre);
-	public List<Material> getMaterialesByDescripcion(String desc);
-	public Material getMaterialById(Integer id) throws MaterialException;
-	public Material saveMaterial(Material m) throws MaterialException;
-	public Material deleteMaterialById(Integer id) throws MaterialException;
-	public List<Material> getListaMaterialesByParams(String nombre, String descripcion) throws MaterialException;
+	List<Material> getListaMateriales();
+	List<Material> getMaterialesByNombre(String nombre);
+	List<Material> getMaterialesByDescripcion(String desc);
+	Material getMaterialById(Integer id) throws MaterialException;
+	Material saveMaterial(Material m) throws MaterialException;
+	Material deleteMaterialById(Integer id) throws MaterialException;
+	List<Material> getListaMaterialesByParams(String nombre, String descripcion) throws MaterialException;
 	
 }

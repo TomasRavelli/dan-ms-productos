@@ -21,7 +21,7 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 
 		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
 
-		if(!find.isPresent()){
+		if(find.isEmpty()){
 			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
 		}
 
@@ -69,7 +69,7 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 
 		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
 
-		if(!find.isPresent()){
+		if(find.isEmpty()){
 			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
 		}
 

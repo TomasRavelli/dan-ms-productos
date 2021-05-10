@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.MaterialInMemoryRepository;
@@ -21,7 +19,7 @@ public class MaterialServiceImpl implements MaterialService {
 	@Override
 	public List<Material> getListaMateriales() {
 
-		List<Material> resultado = new ArrayList<Material>();
+		List<Material> resultado = new ArrayList<>();
 		inMemoryRepository.findAll().forEach(m -> resultado.add(m));
 		return resultado;
 	}
@@ -29,7 +27,7 @@ public class MaterialServiceImpl implements MaterialService {
 	@Override
 	public List<Material> getMaterialesByNombre(String nombre) {
 
-		List<Material> resultado = new ArrayList<Material>();
+		List<Material> resultado = new ArrayList<>();
 		inMemoryRepository.findAll().forEach(m -> {
 			if (m.getNombre().contains(nombre))
 				resultado.add(m);
@@ -39,7 +37,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<Material> getMaterialesByDescripcion(String desc) {
-		List<Material> resultado = new ArrayList<Material>();
+		List<Material> resultado = new ArrayList<>();
 		inMemoryRepository.findAll().forEach(m -> {
 			if (m.getDescripcion().contains(desc))
 				resultado.add(m);
@@ -77,7 +75,7 @@ public class MaterialServiceImpl implements MaterialService {
 	public Material deleteMaterialById(Integer id) throws MaterialException {
 
 		Optional<Material> find = inMemoryRepository.findById(id);
-		if(!find.isPresent()){
+		if(find.isEmpty()){
 			throw new MaterialNotFoundException("No se encontró el material con id: " + id);
 		}
 		try {
@@ -90,7 +88,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<Material> getListaMaterialesByParams(String nombre, String descripcion) throws MaterialException {
-		List<Material> resultado = new ArrayList<Material>();
+		List<Material> resultado = new ArrayList<>();
 		try {
 			inMemoryRepository.findAll().forEach(m -> {
 				if (m.getDescripcion().contains(descripcion) || m.getNombre().contains(nombre))
