@@ -1,6 +1,5 @@
 package dan.tp2021.productos.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,10 @@ public class MaterialRest {
 
 		// TODO pedir a un service que obtenega el material
 		try {
-			return materialServiceImpl.getMaterialById(id);
+			Material result = materialServiceImpl.getMaterialById(id);
+			return ResponseEntity.ok(result);
+		} catch (MaterialService.MaterialNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -57,23 +59,25 @@ public class MaterialRest {
 			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion) {
 
 		try {
+			//TODO esta comprobación la podría hacer el service y llamar a los otros métodos según necesite...
 			if (!nombre.isBlank() && !descripcion.isBlank()) {
-				return materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
-			} else {
-				if (!nombre.isBlank()) {
-					return materialServiceImpl.getMaterialesByNombre(nombre);
-				}
-				else {
-					if(!descripcion.isBlank()) {
-						return materialServiceImpl.getMaterialesByDescripcion(descripcion);
-					}
-					else {
-						return materialServiceImpl.getListaMateriales();
-					}
-				}
+				List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
+				return ResponseEntity.ok(lista);
 			}
+			if (!nombre.isBlank()) {
+				List<Material> lista = materialServiceImpl.getMaterialesByNombre(nombre);
+				return ResponseEntity.ok(lista);
+			}
+
+			if (!descripcion.isBlank()) {
+				List<Material> lista = materialServiceImpl.getMaterialesByDescripcion(descripcion);
+				return ResponseEntity.ok(lista);
+			}
+
+			List<Material> lista = materialServiceImpl.getListaMateriales();
+			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
-		
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -87,7 +91,8 @@ public class MaterialRest {
 
 		if (material != null) {
 			try {
-				return materialServiceImpl.saveMaterial(material);
+				Material resultado = materialServiceImpl.saveMaterial(material);
+				return ResponseEntity.ok(resultado);
 			} catch (Exception e) {
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
@@ -105,9 +110,12 @@ public class MaterialRest {
 
 		if (material.getId() != null) {
 			try {
-				return materialServiceImpl.saveMaterial(material);
+				Material resultado = materialServiceImpl.saveMaterial(material);
+				return ResponseEntity.ok(resultado);
+			} catch (MaterialService.MaterialNotFoundException e){
+				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
 
@@ -122,7 +130,10 @@ public class MaterialRest {
 	public ResponseEntity<Material> deleteMaterial(@PathVariable Integer id) {
 
 		try {
-			return materialServiceImpl.deleteMaterialById(id);
+			Material resultado =  materialServiceImpl.deleteMaterialById(id);
+			return ResponseEntity.ok(resultado);
+		} catch (MaterialService.MaterialNotFoundException e){
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}

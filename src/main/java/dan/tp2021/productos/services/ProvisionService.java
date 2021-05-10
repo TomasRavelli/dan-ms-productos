@@ -2,15 +2,16 @@ package dan.tp2021.productos.services;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import dan.tp2021.productos.domain.Provision;
 
 
 public interface ProvisionService {
-	public ResponseEntity<Provision> getProvisionById(Integer id);
-	public ResponseEntity<List<Provision>> getListaProvisiones();
-	public ResponseEntity<Provision> saveProvision(Provision p);
-	public ResponseEntity<Provision> deleteProvisionById(Integer id);
+
+	class ProvisionException extends Exception { ProvisionException(String message){super(message);}}
+	class ProvisionNotFoundException extends ProvisionException { ProvisionNotFoundException(String message){super(message);}}
+
+	Provision getProvisionById(Integer id) throws ProvisionException;
+	List<Provision> getListaProvisiones();
+	Provision saveProvision(Provision p) throws ProvisionException;
+	Provision deleteProvisionById(Integer id) throws ProvisionException;
 }
