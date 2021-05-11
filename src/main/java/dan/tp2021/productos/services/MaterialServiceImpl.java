@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.MaterialInMemoryRepository;
 import dan.tp2021.productos.domain.Material;
+import dan.tp2021.productos.exceptions.material.MaterialException;
+import dan.tp2021.productos.exceptions.material.MaterialNotFoundException;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {

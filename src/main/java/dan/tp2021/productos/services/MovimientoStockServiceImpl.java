@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.MovimientosStockInMemoryRepository;
 import dan.tp2021.productos.domain.MovimientosStock;
+import dan.tp2021.productos.exceptions.movimientosstock.MovimientosStockException;
+import dan.tp2021.productos.exceptions.movimientosstock.MovimientosStockNotFoundException;
 
 @Service
 public class MovimientoStockServiceImpl implements MovimientosStockService {

@@ -3,12 +3,10 @@ package dan.tp2021.productos.services;
 import java.util.List;
 
 import dan.tp2021.productos.domain.Material;
+import dan.tp2021.productos.exceptions.material.MaterialException;
 
 
 public interface MaterialService {
-
-	public class MaterialException extends Exception { MaterialException(String message){super(message);}}
-	public class MaterialNotFoundException extends MaterialException {public MaterialNotFoundException(String message){super(message);}}
 
 	List<Material> getListaMateriales();
 	List<Material> getMaterialesByNombre(String nombre);

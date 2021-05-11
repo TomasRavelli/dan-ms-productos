@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.MovimientosStock;
+import dan.tp2021.productos.exceptions.movimientosstock.MovimientosStockNotFoundException;
 import dan.tp2021.productos.services.MovimientosStockService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +43,7 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -59,7 +60,7 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.getMovimientoStockById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -81,7 +82,7 @@ public class MovimientosStockRest {
 			if(!resultado.isEmpty()) {
 				return ResponseEntity.ok(resultado);
 			}
-			throw new MovimientosStockService.MovimientosStockNotFoundException("No se encontraron movimientos que coincidan con estso criterios");
+			throw new MovimientosStockNotFoundException("No se encontraron movimientos que coincidan con estso criterios");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -99,7 +100,7 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.deleteMovimientoStockById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -120,7 +121,7 @@ public class MovimientosStockRest {
 			try {
 				MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
 				return ResponseEntity.ok(resultado);
-			} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+			} catch (MovimientosStockNotFoundException e){
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

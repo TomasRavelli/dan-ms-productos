@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.Provision;
+import dan.tp2021.productos.exceptions.provision.ProvisionNotFoundException;
 import dan.tp2021.productos.services.ProvisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +42,7 @@ public class ProvisionRest {
 			try {
 				Provision resultado =  provisionServiceImpl.saveProvision(provision);
 				return ResponseEntity.ok(resultado);
-			} catch (ProvisionService.ProvisionNotFoundException e){
+			} catch (ProvisionNotFoundException e){
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -62,7 +63,7 @@ public class ProvisionRest {
 			try {
 				Provision resultado =  provisionServiceImpl.saveProvision(provision);
 				return ResponseEntity.ok(resultado);
-			} catch (ProvisionService.ProvisionNotFoundException e){
+			} catch (ProvisionNotFoundException e){
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -82,7 +83,7 @@ public class ProvisionRest {
 		try {
 			Provision resultado = provisionServiceImpl.deleteProvisionById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (ProvisionService.ProvisionNotFoundException e){
+		} catch (ProvisionNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -100,7 +101,7 @@ public class ProvisionRest {
 		try {
 			Provision resultado = provisionServiceImpl.getProvisionById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (ProvisionService.ProvisionNotFoundException e){
+		} catch (ProvisionNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

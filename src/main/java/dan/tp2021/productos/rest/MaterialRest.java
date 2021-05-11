@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.Material;
+import dan.tp2021.productos.exceptions.material.MaterialNotFoundException;
 import dan.tp2021.productos.services.MaterialService;
-import dan.tp2021.productos.services.MaterialServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -43,7 +43,7 @@ public class MaterialRest {
 		try {
 			Material result = materialServiceImpl.getMaterialById(id);
 			return ResponseEntity.ok(result);
-		} catch (MaterialService.MaterialNotFoundException e){
+		} catch (MaterialNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -67,7 +67,7 @@ public class MaterialRest {
 			if(!lista.isEmpty()) {
 				return ResponseEntity.ok(lista);
 			}
-			throw new MaterialService.MaterialNotFoundException("No se encontraron materiales que cumplan con estos criterios.");
+			throw new MaterialNotFoundException("No se encontraron materiales que cumplan con estos criterios.");
 		} catch (Exception e) {
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -104,7 +104,7 @@ public class MaterialRest {
 			try {
 				Material resultado = materialServiceImpl.saveMaterial(material);
 				return ResponseEntity.ok(resultado);
-			} catch (MaterialService.MaterialNotFoundException e){
+			} catch (MaterialNotFoundException e){
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -124,7 +124,7 @@ public class MaterialRest {
 		try {
 			Material resultado =  materialServiceImpl.deleteMaterialById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (MaterialService.MaterialNotFoundException e){
+		} catch (MaterialNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
