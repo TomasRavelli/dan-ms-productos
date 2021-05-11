@@ -60,14 +60,11 @@ public class MaterialRest {
 			@RequestParam(required = false, name = "nombre", defaultValue = "") String nombre,
 			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion) {
 
-		List<Material> lista = new ArrayList<>();
+
 		try {
-			
-			lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
-			if(!lista.isEmpty()) {
-				return ResponseEntity.ok(lista);
-			}
-			throw new MaterialService.MaterialNotFoundException("No se encontraron materiales que cumplan con estos criterios.");
+
+			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
+			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
