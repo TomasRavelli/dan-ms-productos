@@ -3,10 +3,17 @@ package dan.tp2021.productos.domain;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Provision {
 
+	@Id
 	private Integer id;
 	private Instant fechaProvision;
+	@OneToMany
 	private List<DetalleProvision> detalle;
 	
 	public Integer getId() {

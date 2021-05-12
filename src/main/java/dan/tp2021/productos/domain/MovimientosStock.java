@@ -2,11 +2,21 @@ package dan.tp2021.productos.domain;
 
 import java.time.Instant;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+@Entity
 public class MovimientosStock {
 	//Aca no tendria que ir una Provision y sacar ambos detalles? segun el enunciado, cada movimiento de stock conoce que provision lo creo.
+	@Id
 	private Integer id;
+	@OneToOne
 	private DetallePedido detallePedido;
+	@OneToOne
 	private DetalleProvision detalleProvision;
+	@ManyToOne
 	private Material material;
 	private Integer cantidadEntrada;
 	private Integer cantidadSalida;

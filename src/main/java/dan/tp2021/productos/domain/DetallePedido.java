@@ -1,8 +1,15 @@
 package dan.tp2021.productos.domain;
 
-//Esta clase es necesaria?
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+//Esta clase es necesaria? Sí
+@Entity
 public class DetallePedido {
+	@Id
 	private Integer id;
+	@ManyToOne
 	private Material material;
 	private Integer cantidad;
 

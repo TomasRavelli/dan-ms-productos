@@ -1,7 +1,13 @@
 package dan.tp2021.productos.domain;
 
-public class Unidad {
+import org.springframework.data.annotation.ReadOnlyProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Unidad {
+	@Id
 	private Integer id;
 	private String descripcion;
 	public Integer getId() {
