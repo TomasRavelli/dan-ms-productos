@@ -3,6 +3,8 @@ package dan.tp2021.productos.domain;
 import java.time.Instant;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -11,6 +13,7 @@ import javax.persistence.OneToOne;
 public class MovimientosStock {
 	//Aca no tendria que ir una Provision y sacar ambos detalles? segun el enunciado, cada movimiento de stock conoce que provision lo creo.
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@OneToOne
 	private DetallePedido detallePedido;
@@ -64,6 +67,17 @@ public class MovimientosStock {
 	public void setFecha(Instant fecha) {
 		this.fecha = fecha;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "MovimientosStock{" +
+				"id=" + id +
+				", detallePedido=" + detallePedido +
+				", detalleProvision=" + detalleProvision +
+				", material=" + material +
+				", cantidadEntrada=" + cantidadEntrada +
+				", cantidadSalida=" + cantidadSalida +
+				", fecha=" + fecha +
+				'}';
+	}
 }

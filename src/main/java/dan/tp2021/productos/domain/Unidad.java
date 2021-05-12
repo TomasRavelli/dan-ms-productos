@@ -3,11 +3,14 @@ package dan.tp2021.productos.domain;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Unidad {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String descripcion;
 	public Integer getId() {

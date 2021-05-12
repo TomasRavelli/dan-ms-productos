@@ -1,6 +1,8 @@
 package dan.tp2021.productos.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -8,6 +10,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class DetallePedido {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@ManyToOne
 	private Material material;
