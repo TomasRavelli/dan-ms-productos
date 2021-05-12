@@ -3,6 +3,8 @@ package dan.tp2021.productos.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,8 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/api/material")
 @Api(value = "MaterialRest", description = "Permite gestionar los materiales de la empresa")
 public class MaterialRest {
+
+	private static final Logger logger = LoggerFactory.getLogger(MaterialRest.class);
 
 	@Autowired
 	MaterialService materialServiceImpl;
@@ -62,11 +66,12 @@ public class MaterialRest {
 
 
 		try {
-
+			logger.debug("getListaMateriales(): Se recibieron parámetros nombre: " + nombre + " y descripción: " + descripcion);
 			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
 			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
-
+			logger.error("getListaMateriales(): Error al obtener la lista de materiales: " + e.getMessage());
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -80,8 +85,9 @@ public class MaterialRest {
 
 		if (material != null) {
 			try {
+				logger.debug( "El material no es null y se va aguardar: "+material);
 				Material resultado = materialServiceImpl.saveMaterial(material);
-				return ResponseEntity.ok(resultado);
+				return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
 			} catch (Exception e) {
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
@@ -119,6 +125,7 @@ public class MaterialRest {
 	public ResponseEntity<Material> deleteMaterial(@PathVariable Integer id) {
 
 		try {
+			logger.debug("deleteMaterial(): La API recibió el id material: " + id);
 			Material resultado =  materialServiceImpl.deleteMaterialById(id);
 			return ResponseEntity.ok(resultado);
 		} catch (MaterialService.MaterialNotFoundException e){
