@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import dan.tp2021.productos.domain.Provision;
 import frsf.isi.dan.InMemoryRepository;
 
+@Deprecated
 @Repository
 public class ProvisionInMemoryRepository extends InMemoryRepository<Provision> {
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import dan.tp2021.productos.domain.Material;
 import frsf.isi.dan.InMemoryRepository;
 
+@Deprecated
 @Repository
 public class MaterialInMemoryRepository extends InMemoryRepository<Material> {
 

@@ -88,8 +88,12 @@ public class MaterialRest {
 				logger.debug( "El material no es null y se va aguardar: "+material);
 				Material resultado = materialServiceImpl.saveMaterial(material);
 				return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+			} catch (MaterialService.MaterialNotFoundException e){
+				logger.warn("crearMaterial: Se intentó guardar un material con un ID no existente: " + material);
+				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+				logger.error("crearMaterial: Error desconocido: " + e.getMessage());
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
 
