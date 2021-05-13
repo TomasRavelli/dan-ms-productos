@@ -1,5 +1,6 @@
 package dan.tp2021.productos.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,7 @@ public class Material {
 	private Double precio;
 	private Integer stockActual;
 	private Integer stockMinimo;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Unidad unidad;
 	
 	public Integer getId() {

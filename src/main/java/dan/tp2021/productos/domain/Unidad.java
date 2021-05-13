@@ -2,6 +2,7 @@ package dan.tp2021.productos.domain;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,5 +26,12 @@ public class Unidad {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Unidad{" +
+				"id=" + id +
+				", descripcion='" + descripcion + '\'' +
+				'}';
+	}
 }

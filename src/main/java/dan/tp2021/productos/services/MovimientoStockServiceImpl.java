@@ -76,7 +76,7 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 		}
 
 		logger.debug("deleteMovimientoStockById(): Eliminado el MovimientosStock con id \"" + id + "\": " + find.get());
-		movimientosStockRepository.delete(find.get());
+		movimientosStockRepository.deleteById(id);
 
 		return find.get();
 	}

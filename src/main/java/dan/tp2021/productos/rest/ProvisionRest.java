@@ -2,6 +2,8 @@ package dan.tp2021.productos.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = "ProvisionRest", description = "Permite gestionar las provisiones de la empresa")
 
 public class ProvisionRest {
+
+	private static final Logger logger = LoggerFactory.getLogger(ProvisionRest.class);
 
 	@Autowired
 	ProvisionService provisionServiceImpl;

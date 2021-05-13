@@ -3,6 +3,7 @@ package dan.tp2021.productos.domain;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,7 +17,7 @@ public class Provision {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private Instant fechaProvision;
-	@OneToMany
+	@OneToMany(cascade = CascadeType.PERSIST)
 	private List<DetalleProvision> detalle;
 	
 	public Integer getId() {
