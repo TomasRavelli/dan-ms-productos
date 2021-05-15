@@ -1,6 +1,6 @@
 package dan.tp2021.productos.services;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-
 import dan.tp2021.productos.dao.ProvisionInMemoryRepository;
 import dan.tp2021.productos.dao.ProvisionRepository;
+import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Provision;
 
 @Service
@@ -50,6 +49,12 @@ public class ProvisionServiceImpl implements ProvisionService {
 		if(p.getId() != null && !provisionRepository.existsById(p.getId())) {
 			logger.debug("saveProvision(): Se recibió una provisión con id pero que no está en la base de datos: " + p);
 			throw new ProvisionNotFoundException("");
+		}
+		for (DetalleProvision det: p.getDetalle()) {
+			det.setProvision(p);
+		}
+		if(p.getId() == null){
+			p.setFechaProvision(Instant.now());
 		}
 		logger.debug("saveProvision(): Guardando la provisión: " + p);
 		return provisionRepository.save(p);

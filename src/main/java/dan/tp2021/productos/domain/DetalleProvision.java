@@ -1,21 +1,32 @@
 package dan.tp2021.productos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 public class DetalleProvision {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Material material;
     private Integer cantidad;
     @ManyToOne
+    @JoinColumn(name = "id_provision")
     private Provision provision;
 
     public Integer getId() {
@@ -49,4 +60,14 @@ public class DetalleProvision {
 	public void setProvision(Provision provision) {
 		this.provision = provision;
 	}
+
+    @Override
+    public String toString() {
+        return "DetalleProvision{" +
+                "id=" + id +
+                ", material=" + material +
+                ", cantidad=" + cantidad +
+                ", provision=" + (provision != null ? provision.getId() : "null") +
+                '}';
+    }
 }

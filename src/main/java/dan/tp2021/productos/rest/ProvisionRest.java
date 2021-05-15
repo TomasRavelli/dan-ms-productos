@@ -48,6 +48,7 @@ public class ProvisionRest {
 			} catch (ProvisionService.ProvisionNotFoundException e){
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
+				logger.error("crearProvision(): Error al crear la provisión: " + provision + " Exepcion: " + e.getClass().getName() + ":: " +e.getMessage());
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
