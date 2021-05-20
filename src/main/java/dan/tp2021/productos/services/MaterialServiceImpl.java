@@ -83,6 +83,7 @@ public class MaterialServiceImpl implements MaterialService {
 		}
 		try {
 			logger.debug("deleteMaterialById(): Voy a eliminar el material con id: " + id);
+			//TODO Tira error porque tiene relaciones con otras entidades, por ejemplo detalle_pedido, en Pedidos.
 			materialRepository.deleteById(id);
 		} catch (Exception e) {
 			throw new MaterialException("");

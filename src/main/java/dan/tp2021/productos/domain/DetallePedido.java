@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-//Esta clase es necesaria? Sí
+//TODO no deberia apuntar al schema de Material?
 @Entity
 public class DetallePedido {
 	@Id
