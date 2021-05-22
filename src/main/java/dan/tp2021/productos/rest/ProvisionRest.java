@@ -68,8 +68,10 @@ public class ProvisionRest {
 				Provision resultado =  provisionServiceImpl.saveProvision(provision);
 				return ResponseEntity.ok(resultado);
 			} catch (ProvisionService.ProvisionNotFoundException e){
+				logger.error("Provision no encontrada. Id: " +provision.getId() + ". Mensaje de error: " + e.getMessage());
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
+				logger.error("Error desconocido. Mensaje de error: " + e.getMessage());
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}

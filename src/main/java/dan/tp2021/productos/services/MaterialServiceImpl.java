@@ -18,6 +18,9 @@ public class MaterialServiceImpl implements MaterialService {
 	private static final Logger logger = LoggerFactory.getLogger(MaterialServiceImpl.class);
 
 	@Autowired
+	DetallePedidoService detallePedidoService;
+	
+	@Autowired
 	MaterialInMemoryRepository inMemoryRepository;
 
 	@Autowired
@@ -84,8 +87,10 @@ public class MaterialServiceImpl implements MaterialService {
 		try {
 			logger.debug("deleteMaterialById(): Voy a eliminar el material con id: " + id);
 			//TODO Tira error porque tiene relaciones con otras entidades, por ejemplo detalle_pedido, en Pedidos.
+			detallePedidoService.setNullMateriales(id);
 			materialRepository.deleteById(id);
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			throw new MaterialException("");
 		}
 		return find.get();
