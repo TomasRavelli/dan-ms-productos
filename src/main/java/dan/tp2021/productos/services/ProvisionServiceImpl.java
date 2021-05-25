@@ -27,7 +27,7 @@ public class ProvisionServiceImpl implements ProvisionService {
 	@Override
 	public Provision getProvisionById(Integer id) throws ProvisionException {
 
-		Optional<Provision> find = inMemoryRepository.findById(id);
+		Optional<Provision> find = provisionRepository.findById(id);
 
 		if(find.isEmpty()){
 			throw new ProvisionNotFoundException("No se pudo encontrar la provisión con id: " + id);

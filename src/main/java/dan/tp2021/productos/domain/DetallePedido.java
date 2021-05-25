@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-//Esta clase es necesaria? Sí
+//TODO no deberia apuntar al schema de Pedido?
 @Entity
 @Table(name = "detalle_pedido", catalog = "`dan-ms-pedido`")
 public class DetallePedido {
@@ -16,7 +16,7 @@ public class DetallePedido {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@ManyToOne
-	@JoinColumn(name = "ID_PRODUCTO")
+	@JoinColumn(name = "material_id")
 	private Material material;
 	private Integer cantidad;
 
