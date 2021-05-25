@@ -49,16 +49,15 @@ public class MovimientosStockRest {
 			MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
 			return ResponseEntity.ok(resultado);
 		} catch (MovimientosStockNotFoundException e){
-			logger.warn("saveMovStock(): No se encontró el MovimientosStock: " + ms);
+			logger.warn("saveMovStock(): No se encontró el MovimientosStock: " + ms, e);
 			return ResponseEntity.notFound().build();
 		} catch (DataIntegrityViolationException e){
 			//Esta excepción se lanza cuando se viola una restricción SQL, como una foreign Key. Nose como saber excatamente que pasó así que retorno un mensage general.
 			// Respondo 422 Unprocessable Entity, porque es un error en los datos que me mandaron y el cliente tiene que cambiar algo para que no falle: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/422
-			logger.error("saveMovStock(): Se produjo un error al insertar el MovimientosStock en la base de datos. MovimientosStock: " + ms + "\n Error recibido: " + e.getMessage());
+			logger.error("saveMovStock(): Se produjo un error al insertar el MovimientosStock en la base de datos. MovimientosStock: " + ms + "\n Error recibido: " + e.getMessage(), e);
 			return ResponseEntity.unprocessableEntity().build();
 		} catch (Exception e) {
-			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage());
-			logger.debug("saveMovStock(): Tipo de la excepción: " + e.getClass().getName());
+			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -74,10 +73,10 @@ public class MovimientosStockRest {
 			MovimientosStock resultado = movimientosStockServiceImpl.getMovimientoStockById(id);
 			return ResponseEntity.ok(resultado);
 		} catch (MovimientosStockNotFoundException e){
-			logger.warn("getMovimientoStockById(): No se encontró el MovimientosStock con id: " + id);
+			logger.warn("getMovimientoStockById(): No se encontró el MovimientosStock con id: " + id, e);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
-			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage());
+			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -97,7 +96,7 @@ public class MovimientosStockRest {
 			logger.debug("saveMovStock(): Devolviendo la lista: " + resultado);
 			return ResponseEntity.ok(resultado);
 		} catch (Exception e) {
-			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage());
+			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -116,10 +115,10 @@ public class MovimientosStockRest {
 			logger.debug("deleteMovimientoStock(): retornando: " + resultado);
 			return ResponseEntity.ok(resultado);
 		} catch (MovimientosStockNotFoundException e){
-			logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con id: " + id);
+			logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con id: " + id, e);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
-			logger.error("deleteMovimientoStock(): Ocurrió un error inesperado: " + e.getMessage());
+			logger.error("deleteMovimientoStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -139,10 +138,10 @@ public class MovimientosStockRest {
 				logger.debug("updateMovimientoStock(): retornando: " + resultado);
 				return ResponseEntity.ok(resultado);
 			} catch (MovimientosStockNotFoundException e){
-				logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con: " + ms);
+				logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con: " + ms, e);
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
-				logger.error("deleteMovimientoStock(): Ocurrió un error inesperado: " + e.getMessage());
+				logger.error("deleteMovimientoStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}

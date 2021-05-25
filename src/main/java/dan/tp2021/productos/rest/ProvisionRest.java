@@ -47,9 +47,10 @@ public class ProvisionRest {
 				Provision resultado =  provisionServiceImpl.saveProvision(provision);
 				return ResponseEntity.ok(resultado);
 			} catch (ProvisionNotFoundException e){
+				logger.warn("crearProvision(): No se la provisión: " + provision, e);
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
-				logger.error("crearProvision(): Error al crear la provisión: " + provision + " Exepcion: " + e.getClass().getName() + ":: " +e.getMessage());
+				logger.error("crearProvision(): Error al crear la provisión: " + provision + " Exepcion: " + e.getClass().getName() + ":: " +e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -85,14 +86,16 @@ public class ProvisionRest {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Provision eliminada correctamente"),
 			@ApiResponse(code = 401, message = "No autorizado"), @ApiResponse(code = 403, message = "Prohibido"),
 			@ApiResponse(code = 404, message = "El ID no existe") })
-	public ResponseEntity<Provision> deleteProvision(@PathVariable Integer id) {
+	public ResponseEntity<Provision> crearProvision(@PathVariable Integer id) {
 
 		try {
 			Provision resultado = provisionServiceImpl.deleteProvisionById(id);
 			return ResponseEntity.ok(resultado);
 		} catch (ProvisionNotFoundException e){
+			logger.warn("crearProvision(): No se encontró la provisión a eliminar por id: " + id, e);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
+			logger.error("crearProvision(): Error al eliminar la provisión: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
