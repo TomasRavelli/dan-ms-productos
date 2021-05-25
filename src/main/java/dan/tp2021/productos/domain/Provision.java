@@ -20,7 +20,7 @@ import javax.persistence.OneToMany;
 public class Provision {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private Instant fechaProvision;
 	@OneToMany(cascade = CascadeType.ALL)

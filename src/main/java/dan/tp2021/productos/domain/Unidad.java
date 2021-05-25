@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 public class Unidad {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String descripcion;
 	public Integer getId() {

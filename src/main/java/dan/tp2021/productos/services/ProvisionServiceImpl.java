@@ -13,14 +13,13 @@ import dan.tp2021.productos.dao.ProvisionInMemoryRepository;
 import dan.tp2021.productos.dao.ProvisionRepository;
 import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Provision;
+import dan.tp2021.productos.exeptions.provision.ProvisionException;
+import dan.tp2021.productos.exeptions.provision.ProvisionNotFoundException;
 
 @Service
 public class ProvisionServiceImpl implements ProvisionService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProvisionServiceImpl.class);
-
-	@Autowired
-	ProvisionInMemoryRepository inMemoryRepository;
 
 	@Autowired
 	ProvisionRepository provisionRepository;

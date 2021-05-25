@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.MovimientosStock;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
 import dan.tp2021.productos.services.MovimientosStockService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +48,7 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
 			logger.warn("saveMovStock(): No se encontró el MovimientosStock: " + ms);
 			return ResponseEntity.notFound().build();
 		} catch (DataIntegrityViolationException e){
@@ -72,7 +73,7 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.getMovimientoStockById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
 			logger.warn("getMovimientoStockById(): No se encontró el MovimientosStock con id: " + id);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
@@ -114,7 +115,7 @@ public class MovimientosStockRest {
 			MovimientosStock resultado = movimientosStockServiceImpl.deleteMovimientoStockById(id);
 			logger.debug("deleteMovimientoStock(): retornando: " + resultado);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
 			logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con id: " + id);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
@@ -137,7 +138,7 @@ public class MovimientosStockRest {
 				MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
 				logger.debug("updateMovimientoStock(): retornando: " + resultado);
 				return ResponseEntity.ok(resultado);
-			} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+			} catch (MovimientosStockNotFoundException e){
 				logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con: " + ms);
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {

@@ -4,15 +4,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 //Esta clase es necesaria? Sí
 @Entity
+@Table(name = "detalle_pedido", catalog = "`dan-ms-pedido`")
 public class DetallePedido {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@ManyToOne
+	@JoinColumn(name = "ID_PRODUCTO")
 	private Material material;
 	private Integer cantidad;
 

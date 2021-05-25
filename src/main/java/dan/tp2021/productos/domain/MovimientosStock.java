@@ -13,7 +13,7 @@ import javax.persistence.OneToOne;
 public class MovimientosStock {
 	//Aca no tendria que ir una Provision y sacar ambos detalles? segun el enunciado, cada movimiento de stock conoce que provision lo creo.
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@OneToOne
 	private DetallePedido detallePedido;

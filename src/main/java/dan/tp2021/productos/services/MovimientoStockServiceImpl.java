@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 import dan.tp2021.productos.dao.MovimientosStockRepository;
 import dan.tp2021.productos.dao.MovimientosStockInMemoryRepository;
 import dan.tp2021.productos.domain.MovimientosStock;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockException;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
 
 @Service
 public class MovimientoStockServiceImpl implements MovimientosStockService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MovimientoStockServiceImpl.class);
-
-	@Autowired
-	MovimientosStockInMemoryRepository inMemoryRepository;
 
 	@Autowired
 	MovimientosStockRepository movimientosStockRepository;

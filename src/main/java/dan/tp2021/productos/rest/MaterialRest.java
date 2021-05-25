@@ -1,6 +1,5 @@
 package dan.tp2021.productos.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.Material;
+import dan.tp2021.productos.exeptions.material.MaterialNotFoundException;
+import dan.tp2021.productos.exeptions.material.UnidadInvalidaException;
 import dan.tp2021.productos.services.MaterialService;
-import dan.tp2021.productos.services.MaterialServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -47,7 +47,7 @@ public class MaterialRest {
 		try {
 			Material result = materialServiceImpl.getMaterialById(id);
 			return ResponseEntity.ok(result);
-		} catch (MaterialService.MaterialNotFoundException e){
+		} catch (MaterialNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -70,7 +70,7 @@ public class MaterialRest {
 			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
 			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
-			logger.error("getListaMateriales(): Error al obtener la lista de materiales: " + e.getMessage());
+			logger.error("getListaMateriales(): Error al obtener la lista de materiales: " + e.getMessage(), e);
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -88,11 +88,14 @@ public class MaterialRest {
 				logger.debug( "El material no es null y se va aguardar: "+material);
 				Material resultado = materialServiceImpl.saveMaterial(material);
 				return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
-			} catch (MaterialService.MaterialNotFoundException e){
-				logger.warn("crearMaterial: Se intentó guardar un material con un ID no existente: " + material);
+			} catch (MaterialNotFoundException e){
+				logger.warn("crearMaterial(): Se intentó guardar un material con un ID no existente: " + material, e);
 				return ResponseEntity.notFound().build();
+			} catch (UnidadInvalidaException e){
+				logger.warn("crearMaterial(): La unidad recibida no se pudo validar: " + material, e);
+				return ResponseEntity.unprocessableEntity().build();
 			} catch (Exception e) {
-				logger.error("crearMaterial: Error desconocido: " + e.getMessage());
+				logger.error("crearMaterial(): Error desconocido: " + e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -111,7 +114,7 @@ public class MaterialRest {
 			try {
 				Material resultado = materialServiceImpl.saveMaterial(material);
 				return ResponseEntity.ok(resultado);
-			} catch (MaterialService.MaterialNotFoundException e){
+			} catch (MaterialNotFoundException e){
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -132,7 +135,7 @@ public class MaterialRest {
 			logger.debug("deleteMaterial(): La API recibió el id material: " + id);
 			Material resultado =  materialServiceImpl.deleteMaterialById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (MaterialService.MaterialNotFoundException e){
+		} catch (MaterialNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
