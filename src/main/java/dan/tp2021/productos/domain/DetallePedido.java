@@ -1,6 +1,7 @@
 package dan.tp2021.productos.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +17,7 @@ public class DetallePedido {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@ManyToOne
-	@JoinColumn(name = "material_id")
+	@JoinColumn(name = "producto_id", foreignKey = @ForeignKey(name = "FK_producto_detalle_pedido")) //Usamos el nombre que se le da al material en dan-ms-pedidos, porque esta entidad le pertenece a ese microservicio
 	private Material material;
 	private Integer cantidad;
 
