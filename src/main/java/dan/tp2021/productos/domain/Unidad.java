@@ -13,6 +13,7 @@ public class Unidad {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@Column(nullable = false, unique = true)
 	private String descripcion;
 	public Integer getId() {
 		return id;

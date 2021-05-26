@@ -115,8 +115,13 @@ public class MaterialRest {
 				Material resultado = materialServiceImpl.saveMaterial(material);
 				return ResponseEntity.ok(resultado);
 			} catch (MaterialNotFoundException e){
+				logger.warn("updateMaterial(): No se encontó el material: " + material, e);
 				return ResponseEntity.notFound().build();
+			} catch (UnidadInvalidaException e){
+				logger.warn("updateMaterial(): La unidad recibida con el material no es válida. " + material, e);
+				return ResponseEntity.unprocessableEntity().build();
 			} catch (Exception e) {
+				logger.error("updateMaterial(): Ocurrió un error al actualizar el material: " + e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
