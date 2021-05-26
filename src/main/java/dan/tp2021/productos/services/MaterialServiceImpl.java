@@ -129,6 +129,7 @@ public class MaterialServiceImpl implements MaterialService {
 				//La descripción no existe pero es válida, seteamos el id de la unidad en null para asegurar que se cree una nueva.
 				logger.debug("validarUnidad(): No se encontró una unidad con la descripción \"" + unidadRecibida.getDescripcion() + "\". Seteando el id en null para crear la nueva unidad.");
 				material.getUnidad().setId(null);
+				
 			}
 		}
 	}
