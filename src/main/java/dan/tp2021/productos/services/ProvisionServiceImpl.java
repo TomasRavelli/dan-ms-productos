@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import dan.tp2021.productos.dao.ProvisionInMemoryRepository;
 import dan.tp2021.productos.dao.ProvisionRepository;
+import dan.tp2021.productos.domain.DetallePedido;
 import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Provision;
 import dan.tp2021.productos.exeptions.provision.ProvisionException;
@@ -68,7 +69,7 @@ public class ProvisionServiceImpl implements ProvisionService {
 			logger.debug("deleteProvisionById(): No se encontró la provisión con id " + id + " para eliminar.");
 			throw new ProvisionNotFoundException("No se pudo encontrar la provisión con id: " + id);
 		}
-		logger.debug("deleteProvisionById(): Eliminando la provisión: " + find.get());
+		logger.debug("deleteProvisionById(): Eliminando la provisión: " + find.get());		
 		provisionRepository.deleteById(id);
 		return find.get();
 	

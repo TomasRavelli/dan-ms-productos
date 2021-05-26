@@ -115,8 +115,10 @@ public class MaterialRest {
 				Material resultado = materialServiceImpl.saveMaterial(material);
 				return ResponseEntity.ok(resultado);
 			} catch (MaterialNotFoundException e){
+				logger.error("Error, material no encontrado. Mensaje de error:" + e.getMessage());
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
+				logger.error("Error desconocido. Mensaje de error:" + e.getMessage());
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}

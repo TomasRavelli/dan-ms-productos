@@ -22,7 +22,7 @@ public class Material {
 	private Double precio;
 	private Integer stockActual;
 	private Integer stockMinimo;
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = {CascadeType.PERSIST})
 	private Unidad unidad;
 	
 	public Integer getId() {
