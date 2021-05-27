@@ -1,26 +1,25 @@
 package dan.tp2021.productos.services;
 
-import java.util.*;
-import java.util.logging.Logger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import dan.tp2021.productos.dao.MovimientosStockRepository;
 import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Material;
+import dan.tp2021.productos.domain.MovimientosStock;
 import dan.tp2021.productos.domain.Provision;
-import io.swagger.models.auth.In;
+import dan.tp2021.productos.exeptions.material.MaterialException;
+import dan.tp2021.productos.exeptions.material.UnidadInvalidaException;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockException;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
+import dan.tp2021.productos.exeptions.provision.ProvisionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
-import dan.tp2021.productos.dao.MovimientosStockRepository;
-import dan.tp2021.productos.dao.MovimientosStockInMemoryRepository;
-import dan.tp2021.productos.domain.MovimientosStock;
-import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockException;
-import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
-
-import javax.jms.Message;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MovimientoStockServiceImpl implements MovimientosStockService {
@@ -101,13 +100,19 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 		msg.forEach((k,v)-> {
 			try {
 				registrarMovStock(k.toString(),(Integer) v);
-			} catch (MaterialService.MaterialException | ProvisionService.ProvisionException | MovimientosStockException e) {
+			} catch (MaterialException e) {
+				e.printStackTrace();
+			} catch (UnidadInvalidaException e) {
+				e.printStackTrace();
+			} catch (ProvisionException e) {
+				e.printStackTrace();
+			} catch (MovimientosStockException e) {
 				e.printStackTrace();
 			}
 		});
 	}
 
-	private void registrarMovStock(String idString, Integer cantidad) throws MaterialService.MaterialException, ProvisionService.ProvisionException, MovimientosStockException {
+	private void registrarMovStock(String idString, Integer cantidad) throws MaterialException, UnidadInvalidaException, ProvisionException, MovimientosStockException {
 		Integer id = Integer.valueOf(idString);
 		MovimientosStock movStockNuevo = new MovimientosStock();
 		Material material = materialServiceImpl.getMaterialById(id);
