@@ -1,15 +1,10 @@
-
 package dan.tp2021.productos.services;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import dan.tp2021.productos.dao.MaterialInMemoryRepository;
 import dan.tp2021.productos.dao.MaterialRepository;
 import dan.tp2021.productos.dao.UnidadRepository;
 import dan.tp2021.productos.domain.Material;
@@ -33,24 +28,24 @@ public class MaterialServiceImpl implements MaterialService {
 	UnidadRepository unidadRepository;
 
 	@Override
-	public List<Material> getListaMateriales(Integer stockMinimo, Integer stockMaximo) {
+	public List<Material> getListaMateriales(Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
 
-		List<Material> resultado = materialRepository.findAllByStockActualBetween(stockMinimo, stockMaximo);
+		List<Material> resultado = materialRepository.findAllByStockActualBetweenAndPrecioBetween(stockMinimo, stockMaximo, precioMin, precioMax);
 
 		logger.debug("getListaMateriales(): Retorna: " + resultado);
 		return resultado;
 	}
 
 	@Override
-	public List<Material> getMaterialesByNombre(String nombre, Integer stockMinimo, Integer stockMaximo) {
-		List<Material> resultado = materialRepository.findByNombreContainsAndStockActualBetween(nombre, stockMinimo, stockMaximo);
+	public List<Material> getMaterialesByNombre(String nombre, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
+		List<Material> resultado = materialRepository.findByNombreContainsAndStockActualBetweenAndPrecioBetween(nombre, stockMinimo, stockMaximo, precioMin, precioMax);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el nombre \"" + nombre + "\": " + resultado);
 		return resultado;
 	}
 
 	@Override
-	public List<Material> getMaterialesByDescripcion(String descripcion, Integer stockMinimo, Integer stockMaximo) {
-		List<Material> resultado = materialRepository.findByDescripcionContainsAndStockActualBetween(descripcion, stockMinimo, stockMaximo);
+	public List<Material> getMaterialesByDescripcion(String descripcion, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
+		List<Material> resultado = materialRepository.findByDescripcionContainsAndStockActualBetweenAndPrecioBetween(descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el la descripción \"" + descripcion + "\": " + resultado);
 		return resultado;
 	}
@@ -156,27 +151,27 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	@Override
-	public List<Material> getListaMaterialesByParams(String nombre, String descripcion, Integer stockMinimo, Integer stockMaximo){
+	public List<Material> getListaMaterialesByParams(String nombre, String descripcion, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax){
 		
 		List<Material> resultado;
 
 		if (!nombre.isBlank() && !descripcion.isBlank()) {
-			resultado = materialRepository.findByNombreContainsOrDescripcionContainsAndStockActualBetween(nombre, descripcion, stockMinimo, stockMaximo);
+			resultado = materialRepository.findByNombreContainsOrDescripcionContainsAndStockActualBetweenAndPrecioBetween(nombre, descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 			logger.debug("getListaMaterialesByParams(): Materiales encontrados con nombre \"" + nombre + "\" y/o descripción \"" + descripcion + "\" : "+resultado);
 			return resultado;
 		}
 		
 		if (!nombre.isBlank()) {
-			resultado = this.getMaterialesByNombre(nombre, stockMinimo, stockMaximo);
+			resultado = this.getMaterialesByNombre(nombre, stockMinimo, stockMaximo, precioMin, precioMax);
 			return resultado;
 		}
 
 		if (!descripcion.isBlank()) {
-			resultado = this.getMaterialesByDescripcion(descripcion, stockMinimo, stockMaximo);
+			resultado = this.getMaterialesByDescripcion(descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 			return resultado;
 		}
 
-		resultado = this.getListaMateriales(stockMinimo, stockMaximo);
+		resultado = this.getListaMateriales(stockMinimo, stockMaximo, precioMin, precioMax);
 		return resultado;
 
 	}

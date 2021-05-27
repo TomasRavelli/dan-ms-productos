@@ -65,15 +65,21 @@ public class MaterialRest {
 			@RequestParam(required = false, name = "nombre", defaultValue = "") String nombre,
 			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion,
 			@RequestParam(required = false, name = "stockMinimo", defaultValue = "0") Integer stockMinimo,
-			@RequestParam(required = false, name = "stockMaximo", defaultValue = "-1") Integer stockMaximo)  {
+			@RequestParam(required = false, name = "stockMaximo", defaultValue = "-1") Integer stockMaximo,
+			@RequestParam(required = false, name = "precioMinimo", defaultValue = "0.0") Double precioMinimo,
+			@RequestParam(required = false, name = "precioMaximo", defaultValue = "-1") Double precioMaximo)  {
 
-		if(stockMaximo<0) {
-			//Si stockMaximo es null, le seteo el maximo vlaor posible.
+		if(stockMaximo < 0) {
+			//Si stockMaximo es null, le seteo el maximo valor posible.
 			stockMaximo = Integer.MAX_VALUE;
+		}
+		if(precioMaximo < 0) {
+			//Si preicoMaximo es null, le seteo el maximo valor posible.
+			precioMaximo = Double.MAX_VALUE;
 		}
 		try {
 			logger.debug("getListaMateriales(): Se recibieron parámetros nombre: " + nombre + " y descripción: " + descripcion);
-			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion, stockMinimo, stockMaximo);
+			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion, stockMinimo, stockMaximo, precioMinimo, precioMaximo);
 			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
 			logger.error("getListaMateriales(): Error al obtener la lista de materiales: " + e.getMessage(), e);
