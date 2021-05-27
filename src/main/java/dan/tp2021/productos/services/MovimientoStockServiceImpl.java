@@ -3,6 +3,8 @@ package dan.tp2021.productos.services;
 import java.util.*;
 import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Material;
 import dan.tp2021.productos.domain.Provision;
@@ -12,16 +14,21 @@ import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
+import dan.tp2021.productos.dao.MovimientosStockRepository;
 import dan.tp2021.productos.dao.MovimientosStockInMemoryRepository;
 import dan.tp2021.productos.domain.MovimientosStock;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockException;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
 
 import javax.jms.Message;
 
 @Service
 public class MovimientoStockServiceImpl implements MovimientosStockService {
 
+	private static final Logger logger = LoggerFactory.getLogger(MovimientoStockServiceImpl.class);
+
 	@Autowired
-	MovimientosStockInMemoryRepository inMemoryRepository;
+	MovimientosStockRepository movimientosStockRepository;
 
 	@Autowired
 	MaterialService materialServiceImpl;
@@ -32,63 +39,56 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 	@Override
 	public MovimientosStock getMovimientoStockById(Integer id) throws MovimientosStockException {
 
-		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
+		Optional<MovimientosStock> find = movimientosStockRepository.findById(id);
 
 		if (find.isEmpty()) {
-			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
+			logger.debug("getMovimientoStockById(): No se pudo encontrar un MovimientosStock con el id \"" + id + "\"");
+			throw new MovimientosStockNotFoundException("No se encontró el MovimientosStock con id: " + id);
 		}
-
+		logger.debug("getMovimientoStockById(): Se encontró el MovimientosStock con id \"" + id + "\": " + find.get());
 		return find.get();
 	}
 
 	@Override
-	public List<MovimientosStock> getListaMovimientos(Integer idMaterial) {
+	public List<MovimientosStock> getListaMovimientos(Integer materialId) {
 
-		List<MovimientosStock> resultado = new ArrayList<>();
+		List<MovimientosStock> resultado;
 		
-		if (idMaterial > 0) {
-			resultado.addAll(getMovimientosByMaterial(idMaterial));
+		if (materialId != null && materialId > 0) {
+			resultado = movimientosStockRepository.findByMaterialId(materialId);
+			logger.debug("getListaMovimientos(): Lista de MovimientosStock encontrados con el id de material \"" + materialId + "\": " + resultado);
 			return resultado;
 		}
-		inMemoryRepository.findAll().forEach(ms -> resultado.add(ms));
+		resultado = movimientosStockRepository.findAll();
+		logger.debug("getListaMovimientos(): No se recibó id de Material, retornando lista completa: " + resultado);
 		return resultado;
-	}
-
-	@Override
-	public List<MovimientosStock> getMovimientosByMaterial(Integer materialId) {
-
-		List<MovimientosStock> resultado = new ArrayList<>();
-
-		inMemoryRepository.findAll().forEach(ms -> {
-			if (ms.getMaterial().getId().equals(materialId))
-				resultado.add(ms);
-		});
-
-		return resultado;
-
 	}
 
 	@Override
 	public MovimientosStock saveMovimientoStock(MovimientosStock ms) throws MovimientosStockException {
 
-		if (ms.getId() != null && !inMemoryRepository.existsById(ms.getId())) {
-
+		if (ms.getId() != null && !movimientosStockRepository.existsById(ms.getId())) {
+			logger.debug("saveMovimientoStock(): Se recibió un Material con id no existente.");
 			throw new MovimientosStockNotFoundException("");
 		}
-
-		return inMemoryRepository.save(ms);
+		logger.debug("saveMovimientoStock(): Guardando el MovimientosStock: " + ms);
+		//TODO hay que guardar el Material también? Si no hay material o no está en la BD se laza una excepción y el controller responde 422 Unprocessable Entity.
+		//Este método se supone que actualiza solo los valores que no son null (hace merge) si la entidad existe en la BD, pero no me estaba andando.
+		return movimientosStockRepository.save(ms);
 	}
 
 	@Override
 	public MovimientosStock deleteMovimientoStockById(Integer id) throws MovimientosStockException {
 
-		Optional<MovimientosStock> find = inMemoryRepository.findById(id);
+		Optional<MovimientosStock> find = movimientosStockRepository.findById(id);
 
 		if (find.isEmpty()) {
-			throw new MovimientosStockNotFoundException("No se encontró el MovimientoStockl con id: " + id);
+			logger.debug("deleteMovimientoStockById(): No se encontró el MovimientosStock con id \"" + id + "\" para eliminar. Lanzando excepción.");
+			throw new MovimientosStockNotFoundException("No se encontró el MovimientosStock con id: " + id);
 		}
 
-		inMemoryRepository.deleteById(id);
+		logger.debug("deleteMovimientoStockById(): Eliminado el MovimientosStock con id \"" + id + "\": " + find.get());
+		movimientosStockRepository.deleteById(id);
 
 		return find.get();
 	}

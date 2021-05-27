@@ -2,7 +2,10 @@ package dan.tp2021.productos.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.MovimientosStock;
+import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
 import dan.tp2021.productos.services.MovimientosStockService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +30,8 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/api/movimientostock")
 @Api(value = "MovimientosStockRest", description = "Permite gestionar los movimientos de stock de la empresa")
 public class MovimientosStockRest {
+
+	private static final Logger logger = LoggerFactory.getLogger(MovimientosStockRest.class);
 
 	@Autowired
 	MovimientosStockService movimientosStockServiceImpl;
@@ -42,9 +48,16 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
+			logger.warn("saveMovStock(): No se encontró el MovimientosStock: " + ms, e);
 			return ResponseEntity.notFound().build();
+		} catch (DataIntegrityViolationException e){
+			//Esta excepción se lanza cuando se viola una restricción SQL, como una foreign Key. Nose como saber excatamente que pasó así que retorno un mensage general.
+			// Respondo 422 Unprocessable Entity, porque es un error en los datos que me mandaron y el cliente tiene que cambiar algo para que no falle: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/422
+			logger.error("saveMovStock(): Se produjo un error al insertar el MovimientosStock en la base de datos. MovimientosStock: " + ms + "\n Error recibido: " + e.getMessage(), e);
+			return ResponseEntity.unprocessableEntity().build();
 		} catch (Exception e) {
+			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -59,9 +72,11 @@ public class MovimientosStockRest {
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.getMovimientoStockById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
+			logger.warn("getMovimientoStockById(): No se encontró el MovimientosStock con id: " + id, e);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
+			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -78,11 +93,10 @@ public class MovimientosStockRest {
 		List<MovimientosStock> resultado;
 		try {
 			resultado = movimientosStockServiceImpl.getListaMovimientos(idMaterial);
-			if(!resultado.isEmpty()) {
-				return ResponseEntity.ok(resultado);
-			}
-			throw new MovimientosStockService.MovimientosStockNotFoundException("No se encontraron movimientos que coincidan con estso criterios");
+			logger.debug("saveMovStock(): Devolviendo la lista: " + resultado);
+			return ResponseEntity.ok(resultado);
 		} catch (Exception e) {
+			logger.error("saveMovStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -98,14 +112,16 @@ public class MovimientosStockRest {
 
 		try {
 			MovimientosStock resultado = movimientosStockServiceImpl.deleteMovimientoStockById(id);
+			logger.debug("deleteMovimientoStock(): retornando: " + resultado);
 			return ResponseEntity.ok(resultado);
-		} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+		} catch (MovimientosStockNotFoundException e){
+			logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con id: " + id, e);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
+			logger.error("deleteMovimientoStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
-		
 	}
 
 	// No se si se permite esto.
@@ -119,14 +135,17 @@ public class MovimientosStockRest {
 		if (ms.getId() != null) {
 			try {
 				MovimientosStock resultado = movimientosStockServiceImpl.saveMovimientoStock(ms);
+				logger.debug("updateMovimientoStock(): retornando: " + resultado);
 				return ResponseEntity.ok(resultado);
-			} catch (MovimientosStockService.MovimientosStockNotFoundException e){
+			} catch (MovimientosStockNotFoundException e){
+				logger.warn("deleteMovimientoStock(): No se encontró el MovimientosStock con: " + ms, e);
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
+				logger.error("deleteMovimientoStock(): Ocurrió un error inesperado: " + e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
-
+		logger.warn("updateMovimientoStock() Se recibió un MovimientosStock sin id: " + ms);
 		return ResponseEntity.badRequest().build();
 	}
 

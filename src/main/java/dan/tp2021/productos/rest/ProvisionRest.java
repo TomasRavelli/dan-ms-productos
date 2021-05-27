@@ -2,6 +2,8 @@ package dan.tp2021.productos.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dan.tp2021.productos.domain.Provision;
+import dan.tp2021.productos.exeptions.provision.ProvisionNotFoundException;
 import dan.tp2021.productos.services.ProvisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +29,8 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = "ProvisionRest", description = "Permite gestionar las provisiones de la empresa")
 
 public class ProvisionRest {
+
+	private static final Logger logger = LoggerFactory.getLogger(ProvisionRest.class);
 
 	@Autowired
 	ProvisionService provisionServiceImpl;
@@ -41,9 +46,11 @@ public class ProvisionRest {
 			try {
 				Provision resultado =  provisionServiceImpl.saveProvision(provision);
 				return ResponseEntity.ok(resultado);
-			} catch (ProvisionService.ProvisionNotFoundException e){
+			} catch (ProvisionNotFoundException e){
+				logger.warn("crearProvision(): No se la provisión: " + provision, e);
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
+				logger.error("crearProvision(): Error al crear la provisión: " + provision + " Exepcion: " + e.getClass().getName() + ":: " +e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -62,9 +69,11 @@ public class ProvisionRest {
 			try {
 				Provision resultado =  provisionServiceImpl.saveProvision(provision);
 				return ResponseEntity.ok(resultado);
-			} catch (ProvisionService.ProvisionNotFoundException e){
+			} catch (ProvisionNotFoundException e){
+				logger.warn("Provision no encontrada. Id: " +provision.getId() + ". Mensaje de error: " + e.getMessage(), e);
 				return ResponseEntity.notFound().build();
 			} catch (Exception e) {
+				logger.error("Error desconocido. Mensaje de error: " + e.getMessage(), e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -77,14 +86,16 @@ public class ProvisionRest {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Provision eliminada correctamente"),
 			@ApiResponse(code = 401, message = "No autorizado"), @ApiResponse(code = 403, message = "Prohibido"),
 			@ApiResponse(code = 404, message = "El ID no existe") })
-	public ResponseEntity<Provision> deleteProvision(@PathVariable Integer id) {
+	public ResponseEntity<Provision> crearProvision(@PathVariable Integer id) {
 
 		try {
 			Provision resultado = provisionServiceImpl.deleteProvisionById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (ProvisionService.ProvisionNotFoundException e){
+		} catch (ProvisionNotFoundException e){
+			logger.warn("crearProvision(): No se encontró la provisión a eliminar por id: " + id, e);
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
+			logger.error("crearProvision(): Error al eliminar la provisión: " + e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -100,7 +111,7 @@ public class ProvisionRest {
 		try {
 			Provision resultado = provisionServiceImpl.getProvisionById(id);
 			return ResponseEntity.ok(resultado);
-		} catch (ProvisionService.ProvisionNotFoundException e){
+		} catch (ProvisionNotFoundException e){
 			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
