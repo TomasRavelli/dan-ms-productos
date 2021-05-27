@@ -1,3 +1,4 @@
+
 package dan.tp2021.productos.services;
 
 import java.util.List;
@@ -32,24 +33,24 @@ public class MaterialServiceImpl implements MaterialService {
 	UnidadRepository unidadRepository;
 
 	@Override
-	public List<Material> getListaMateriales() {
+	public List<Material> getListaMateriales(Integer stockMinimo, Integer stockMaximo) {
 
-		List<Material> resultado = materialRepository.findAll();
+		List<Material> resultado = materialRepository.findAllByStockActualBetween(stockMinimo, stockMaximo);
 
 		logger.debug("getListaMateriales(): Retorna: " + resultado);
 		return resultado;
 	}
 
 	@Override
-	public List<Material> getMaterialesByNombre(String nombre) {
-		List<Material> resultado = materialRepository.findByNombreContains(nombre);
+	public List<Material> getMaterialesByNombre(String nombre, Integer stockMinimo, Integer stockMaximo) {
+		List<Material> resultado = materialRepository.findByNombreContainsAndStockActualBetween(nombre, stockMinimo, stockMaximo);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el nombre \"" + nombre + "\": " + resultado);
 		return resultado;
 	}
 
 	@Override
-	public List<Material> getMaterialesByDescripcion(String descripcion) {
-		List<Material> resultado = materialRepository.findByDescripcionContains(descripcion);
+	public List<Material> getMaterialesByDescripcion(String descripcion, Integer stockMinimo, Integer stockMaximo) {
+		List<Material> resultado = materialRepository.findByDescripcionContainsAndStockActualBetween(descripcion, stockMinimo, stockMaximo);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el la descripción \"" + descripcion + "\": " + resultado);
 		return resultado;
 	}
@@ -155,27 +156,27 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	@Override
-	public List<Material> getListaMaterialesByParams(String nombre, String descripcion){
+	public List<Material> getListaMaterialesByParams(String nombre, String descripcion, Integer stockMinimo, Integer stockMaximo){
 		
 		List<Material> resultado;
 
 		if (!nombre.isBlank() && !descripcion.isBlank()) {
-			resultado = materialRepository.findByNombreContainsOrDescripcionContains(nombre, descripcion);
+			resultado = materialRepository.findByNombreContainsOrDescripcionContainsAndStockActualBetween(nombre, descripcion, stockMinimo, stockMaximo);
 			logger.debug("getListaMaterialesByParams(): Materiales encontrados con nombre \"" + nombre + "\" y/o descripción \"" + descripcion + "\" : "+resultado);
 			return resultado;
 		}
 		
 		if (!nombre.isBlank()) {
-			resultado = this.getMaterialesByNombre(nombre);
+			resultado = this.getMaterialesByNombre(nombre, stockMinimo, stockMaximo);
 			return resultado;
 		}
 
 		if (!descripcion.isBlank()) {
-			resultado = this.getMaterialesByDescripcion(descripcion);
+			resultado = this.getMaterialesByDescripcion(descripcion, stockMinimo, stockMaximo);
 			return resultado;
 		}
 
-		resultado = this.getListaMateriales();
+		resultado = this.getListaMateriales(stockMinimo, stockMaximo);
 		return resultado;
 
 	}

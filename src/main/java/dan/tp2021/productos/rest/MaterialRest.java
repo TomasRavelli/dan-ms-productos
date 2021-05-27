@@ -1,3 +1,4 @@
+
 package dan.tp2021.productos.rest;
 
 import java.util.List;
@@ -62,12 +63,17 @@ public class MaterialRest {
 			@ApiResponse(code = 404, message = "El ID no existe") })
 	public ResponseEntity<List<Material>> getListaMateriales(
 			@RequestParam(required = false, name = "nombre", defaultValue = "") String nombre,
-			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion) {
+			@RequestParam(required = false, name = "descripcion", defaultValue = "") String descripcion,
+			@RequestParam(required = false, name = "stockMinimo", defaultValue = "0") Integer stockMinimo,
+			@RequestParam(required = false, name = "stockMaximo", defaultValue = "-1") Integer stockMaximo)  {
 
-
+		if(stockMaximo<0) {
+			//Si stockMaximo es null, le seteo el maximo vlaor posible.
+			stockMaximo = Integer.MAX_VALUE;
+		}
 		try {
 			logger.debug("getListaMateriales(): Se recibieron parámetros nombre: " + nombre + " y descripción: " + descripcion);
-			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion);
+			List<Material> lista = materialServiceImpl.getListaMaterialesByParams(nombre, descripcion, stockMinimo, stockMaximo);
 			return ResponseEntity.ok(lista);
 		} catch (Exception e) {
 			logger.error("getListaMateriales(): Error al obtener la lista de materiales: " + e.getMessage(), e);
