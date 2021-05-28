@@ -15,7 +15,8 @@ import javax.persistence.OneToMany;
 
 @JsonIdentityInfo(
 		generator = ObjectIdGenerators.PropertyGenerator.class,
-		property = "id")
+		property = "id",
+		scope = Provision.class)
 @Entity
 public class Provision {
 
