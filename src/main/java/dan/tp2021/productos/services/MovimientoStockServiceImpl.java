@@ -17,6 +17,7 @@ import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +98,7 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 	//en este microservicio
 	@JmsListener(destination = "COLA_PEDIDOS")
 	public void handle(HashMap msg) throws JmsException{
+		//TODO falta que le llegue el id del detalle pedido para setearlo en el movimiento stock.
 		msg.forEach((k,v)-> {
 			try {
 				registrarMovStock(k.toString(),(Integer) v);
@@ -129,9 +131,17 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 			//Compro lo justo para quedar en el minimo, esto se podria variar segun necesidad del negocio
 			detalleProvision.setCantidad(material.getStockMinimo()-material.getStockActual());
 			provision.getDetalle().add(detalleProvision);
+			provision.setFechaProvision(Instant.now());
+			detalleProvision.setProvision(provision);
 			provisionServiceImpl.saveProvision(provision);
-			movStockNuevo.setDetalleProvision(detalleProvision);
+			MovimientosStock movStockProvision = new MovimientosStock();
+			movStockProvision.setMaterial(material);
+			movStockProvision.setCantidadEntrada(detalleProvision.getCantidad());
+			movStockProvision.setDetalleProvision(detalleProvision);
+			movStockProvision.setFecha(Instant.now());
+			this.saveMovimientoStock(movStockProvision);
 		}
+		movStockNuevo.setFecha(Instant.now());
 		this.saveMovimientoStock(movStockNuevo);
 	}
 
