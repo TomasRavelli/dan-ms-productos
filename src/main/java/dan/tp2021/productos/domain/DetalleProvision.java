@@ -13,7 +13,8 @@ import javax.persistence.ManyToOne;
 
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+        property = "id",
+        scope = DetalleProvision.class)
 @Entity
 public class DetalleProvision {
     @Id
