@@ -1,14 +1,10 @@
 package dan.tp2021.productos.services;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import dan.tp2021.productos.dao.MaterialInMemoryRepository;
 import dan.tp2021.productos.dao.MaterialRepository;
 import dan.tp2021.productos.dao.UnidadRepository;
 import dan.tp2021.productos.domain.Material;
@@ -32,24 +28,24 @@ public class MaterialServiceImpl implements MaterialService {
 	UnidadRepository unidadRepository;
 
 	@Override
-	public List<Material> getListaMateriales() {
+	public List<Material> getListaMateriales(Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
 
-		List<Material> resultado = materialRepository.findAll();
+		List<Material> resultado = materialRepository.findAllByStockActualBetweenAndPrecioBetween(stockMinimo, stockMaximo, precioMin, precioMax);
 
 		logger.debug("getListaMateriales(): Retorna: " + resultado);
 		return resultado;
 	}
 
 	@Override
-	public List<Material> getMaterialesByNombre(String nombre) {
-		List<Material> resultado = materialRepository.findByNombreContains(nombre);
+	public List<Material> getMaterialesByNombre(String nombre, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
+		List<Material> resultado = materialRepository.findByNombreContainsAndStockActualBetweenAndPrecioBetween(nombre, stockMinimo, stockMaximo, precioMin, precioMax);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el nombre \"" + nombre + "\": " + resultado);
 		return resultado;
 	}
 
 	@Override
-	public List<Material> getMaterialesByDescripcion(String descripcion) {
-		List<Material> resultado = materialRepository.findByDescripcionContains(descripcion);
+	public List<Material> getMaterialesByDescripcion(String descripcion, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
+		List<Material> resultado = materialRepository.findByDescripcionContainsAndStockActualBetweenAndPrecioBetween(descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el la descripción \"" + descripcion + "\": " + resultado);
 		return resultado;
 	}
@@ -155,27 +151,27 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	@Override
-	public List<Material> getListaMaterialesByParams(String nombre, String descripcion){
+	public List<Material> getListaMaterialesByParams(String nombre, String descripcion, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax){
 		
 		List<Material> resultado;
 
 		if (!nombre.isBlank() && !descripcion.isBlank()) {
-			resultado = materialRepository.findByNombreContainsOrDescripcionContains(nombre, descripcion);
+			resultado = materialRepository.findByNombreContainsOrDescripcionContainsAndStockActualBetweenAndPrecioBetween(nombre, descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 			logger.debug("getListaMaterialesByParams(): Materiales encontrados con nombre \"" + nombre + "\" y/o descripción \"" + descripcion + "\" : "+resultado);
 			return resultado;
 		}
 		
 		if (!nombre.isBlank()) {
-			resultado = this.getMaterialesByNombre(nombre);
+			resultado = this.getMaterialesByNombre(nombre, stockMinimo, stockMaximo, precioMin, precioMax);
 			return resultado;
 		}
 
 		if (!descripcion.isBlank()) {
-			resultado = this.getMaterialesByDescripcion(descripcion);
+			resultado = this.getMaterialesByDescripcion(descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 			return resultado;
 		}
 
-		resultado = this.getListaMateriales();
+		resultado = this.getListaMateriales(stockMinimo, stockMaximo, precioMin, precioMax);
 		return resultado;
 
 	}
