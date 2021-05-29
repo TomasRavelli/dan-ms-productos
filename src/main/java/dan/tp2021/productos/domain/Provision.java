@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -27,6 +28,9 @@ public class Provision {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<DetalleProvision> detalle;
 	
+	public Provision() {
+		detalle = new ArrayList<>();
+	}
 	public Integer getId() {
 		return id;
 	}
