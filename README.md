@@ -4,7 +4,8 @@ Repositorio para la asignatura "Desarrollo de aplicaiones en la nube"
 
 Utilizamos una base de datos MySQL.<br>
 El script para crear el schema de la base de datos se encuentra en la carpeta scr/test/resources<br>
-Las tablas se crean automáticamente al ejecutar el código
+Además, en la misma carpeta encontrará un archivo de insomnia con request para testear la API.<br>
+Las tablas se crean automáticamente al ejecutar el código.<br>
 
 Otros repositorios:
 - Microservicio de Usuarios: https://github.com/gezdiaz/dan-ms-usuarios/tree/develop
