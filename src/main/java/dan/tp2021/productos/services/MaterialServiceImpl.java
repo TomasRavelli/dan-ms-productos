@@ -1,4 +1,6 @@
 package dan.tp2021.productos.services;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -7,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import dan.tp2021.productos.dao.MaterialRepository;
 import dan.tp2021.productos.dao.UnidadRepository;
+import dan.tp2021.productos.domain.DetallePedido;
+import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Material;
+import dan.tp2021.productos.domain.MovimientosStock;
 import dan.tp2021.productos.domain.Unidad;
 import dan.tp2021.productos.exeptions.material.MaterialException;
 import dan.tp2021.productos.exeptions.material.MaterialNotFoundException;
@@ -27,10 +32,16 @@ public class MaterialServiceImpl implements MaterialService {
 	@Autowired
 	UnidadRepository unidadRepository;
 
+	@Autowired
+	MovimientosStockService movimientosStockService;
+
+	@Autowired
+	DetalleProvisionService detalleProvisionService;
+
 	@Override
 	public List<Material> getListaMateriales(Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
 
-		List<Material> resultado = materialRepository.findAllByStockActualBetweenAndPrecioBetween(stockMinimo, stockMaximo, precioMin, precioMax);
+		List<Material> resultado = materialRepository.findAllByStockActualBetweenAndPrecioBetweenAndFechaBajaNull(stockMinimo, stockMaximo, precioMin, precioMax);
 
 		logger.debug("getListaMateriales(): Retorna: " + resultado);
 		return resultado;
@@ -38,14 +49,14 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<Material> getMaterialesByNombre(String nombre, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
-		List<Material> resultado = materialRepository.findByNombreContainsAndStockActualBetweenAndPrecioBetween(nombre, stockMinimo, stockMaximo, precioMin, precioMax);
+		List<Material> resultado = materialRepository.findByNombreContainsAndStockActualBetweenAndPrecioBetweenAndFechaBajaNull(nombre, stockMinimo, stockMaximo, precioMin, precioMax);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el nombre \"" + nombre + "\": " + resultado);
 		return resultado;
 	}
 
 	@Override
 	public List<Material> getMaterialesByDescripcion(String descripcion, Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
-		List<Material> resultado = materialRepository.findByDescripcionContainsAndStockActualBetweenAndPrecioBetween(descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
+		List<Material> resultado = materialRepository.findByDescripcionContainsAndStockActualBetweenAndPrecioBetweenAndFechaBajaNull(descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 		logger.debug("getMaterialesByNombre(): Materiales encontrados con el la descripción \"" + descripcion + "\": " + resultado);
 		return resultado;
 	}
@@ -141,13 +152,43 @@ public class MaterialServiceImpl implements MaterialService {
 		try {
 			logger.debug("deleteMaterialById(): Voy a eliminar el material con id: " + id);
 			//TODO Tira error porque tiene relaciones con otras entidades, por ejemplo detalle_pedido, en Pedidos.
-			detallePedidoService.setNullMateriales(id);
-			materialRepository.deleteById(id);
+//			detallePedidoService.setNullMateriales(id);
+			Material material = find.get();
+			if(this.sePuedeEliminarMaterial(material)) {
+				//El material no tiene relaciones con otras entidades, podemos eliminarlo.
+				materialRepository.deleteById(id);
+			} else {
+				//El material tiene relación con alguna otra entidad, hay que marcarlo como dado de baja
+				material.setFechaBaja(Instant.now());
+				materialRepository.save(material);
+			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("deleteMaterialById(): Excepción eliminando el material: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
 			throw new MaterialException("");
 		}
 		return find.get();
+	}
+
+	private boolean sePuedeEliminarMaterial(Material material) {
+
+		List<DetallePedido> detallesPedido = detallePedidoService.findByMaterialId(material.getId());
+		logger.debug("sePuedeEliminarMaterial(): Lista de detalles pedido: " + detallesPedido);
+		if(detallesPedido.isEmpty()){
+			//hay que ver los detalles provisiones y movimientos stock.
+			List<MovimientosStock> movimientosStock = movimientosStockService.getListaMovimientos(material.getId());
+			logger.debug("sePuedeEliminarMaterial(): Lista de movimientos de stock: " + movimientosStock);
+			if(movimientosStock.isEmpty()){
+				//último cheque, detalles de provisión.
+				List<DetalleProvision> detallesProvision = detalleProvisionService.findByMaterialId(material.getId());
+				logger.debug("sePuedeEliminarMaterial(): Lista de detalles provisión: " + detallesProvision);
+				//Si la lista esta vacía se puede eliminar el material, sino no.
+				return detallesProvision.isEmpty();
+			}
+		}
+		logger.debug("sePuedeEliminarMaterial(): No se puede eliminar el material. Retorno false");
+		//Si llego hasta acá significa que el material está relacionado con detalles pedido o movimientos de stock.
+		return false;
+
 	}
 
 	@Override
@@ -156,7 +197,7 @@ public class MaterialServiceImpl implements MaterialService {
 		List<Material> resultado;
 
 		if (!nombre.isBlank() && !descripcion.isBlank()) {
-			resultado = materialRepository.findByNombreContainsOrDescripcionContainsAndStockActualBetweenAndPrecioBetween(nombre, descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
+			resultado = materialRepository.findByNombreContainsOrDescripcionContainsAndStockActualBetweenAndPrecioBetweenAndFechaBajaNull(nombre, descripcion, stockMinimo, stockMaximo, precioMin, precioMax);
 			logger.debug("getListaMaterialesByParams(): Materiales encontrados con nombre \"" + nombre + "\" y/o descripción \"" + descripcion + "\" : "+resultado);
 			return resultado;
 		}

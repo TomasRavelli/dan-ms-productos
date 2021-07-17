@@ -6,14 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import dan.tp2021.productos.domain.DetallePedido;
 
 @Repository
 public interface DetallePedidoRepository extends JpaRepository<DetallePedido, Integer>{
 
-	@Query("UPDATE DetallePedido dp SET dp.material = null where material.id = :idMaterial ")
-	@Modifying
-	void setNullMaterialInDetalle(@Param("idMaterial") Integer idMaterial);
-
-
+	List<DetallePedido> findByMaterialId(Integer materialId);
 }
