@@ -9,14 +9,14 @@ import dan.tp2021.productos.domain.Material;
 
 public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
-    List<Material> findByNombreContainsAndStockActualBetweenAndPrecioBetween(String nombre, Integer stockMin, Integer stockMax, Double precioMin, Double precioMax);
+    List<Material> findByNombreContainsAndStockActualBetweenAndPrecioBetweenAndFechaBajaNull(String nombre, Integer stockMin, Integer stockMax, Double precioMin, Double precioMax);
 
-    List<Material> findByDescripcionContainsAndStockActualBetweenAndPrecioBetween(String descripcion, Integer stockMin, Integer stockMax, Double precioMin, Double precioMax);
+    List<Material> findByDescripcionContainsAndStockActualBetweenAndPrecioBetweenAndFechaBajaNull(String descripcion, Integer stockMin, Integer stockMax, Double precioMin, Double precioMax);
 
-    @Query("SELECT m FROM Material m WHERE (m.nombre LIKE %:nombre% OR m.descripcion LIKE %:descripcion%) AND (m.stockActual between :stockMin and :stockMax AND m.precio between :precioMin and :precioMax)")
-    List<Material> findByNombreContainsOrDescripcionContainsAndStockActualBetweenAndPrecioBetween(String nombre, String descripcion, Integer stockMin, Integer stockMax, Double precioMin, Double precioMax);
+    @Query("SELECT m FROM Material m WHERE (m.nombre LIKE %:nombre% OR m.descripcion LIKE %:descripcion%) AND (m.stockActual between :stockMin and :stockMax AND m.precio between :precioMin and :precioMax) AND m.fechaBaja is null")
+    List<Material> findByNombreContainsOrDescripcionContainsAndStockActualBetweenAndPrecioBetweenAndFechaBajaNull(String nombre, String descripcion, Integer stockMin, Integer stockMax, Double precioMin, Double precioMax);
 
-	List<Material> findAllByStockActualBetweenAndPrecioBetween(Integer stockMaximo, Integer stockMaximo2, Double precioMin, Double precioMax);
+	List<Material> findAllByStockActualBetweenAndPrecioBetweenAndFechaBajaNull(Integer stockMaximo, Integer stockMaximo2, Double precioMin, Double precioMax);
     
 
 }
