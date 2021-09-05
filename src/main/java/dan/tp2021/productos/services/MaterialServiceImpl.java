@@ -3,6 +3,9 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import dan.tp2021.productos.domain.Unidad;
 import dan.tp2021.productos.exeptions.material.MaterialException;
 import dan.tp2021.productos.exeptions.material.MaterialNotFoundException;
 import dan.tp2021.productos.exeptions.material.UnidadInvalidaException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
@@ -37,7 +42,17 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Autowired
 	DetalleProvisionService detalleProvisionService;
-
+	
+	@Autowired
+	MeterRegistry meterRegistry;
+	
+	private Counter materialesEliminados;
+	
+	@PostConstruct
+	private void inicializarContadores() {
+		materialesEliminados = Counter.builder("material").tag("Cantidad", "Total").description("Total de materiales eliminados.").register(meterRegistry);
+	}
+	
 	@Override
 	public List<Material> getListaMateriales(Integer stockMinimo, Integer stockMaximo, Double precioMin, Double precioMax) {
 
@@ -166,6 +181,8 @@ public class MaterialServiceImpl implements MaterialService {
 			logger.error("deleteMaterialById(): Excepción eliminando el material: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
 			throw new MaterialException("");
 		}
+		logger.error("Se eleiminar el material correctamente");
+		materialesEliminados.increment();
 		return find.get();
 	}
 

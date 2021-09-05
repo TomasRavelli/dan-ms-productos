@@ -8,6 +8,9 @@ import dan.tp2021.productos.exeptions.material.UnidadInvalidaException;
 import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockException;
 import dan.tp2021.productos.exeptions.movimientoStock.MovimientosStockNotFoundException;
 import dan.tp2021.productos.exeptions.provision.ProvisionException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.PostConstruct;
 
 @Service
 public class MovimientoStockServiceImpl implements MovimientosStockService {
@@ -37,6 +42,17 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
 
     @Autowired
     DetallePedidoService detallePedidoServiceImpl;
+    
+    @Autowired
+	MeterRegistry meterRegistry;
+	
+	private Counter cantMovStock;
+	
+	@PostConstruct
+	private void inicializarContadores() {
+		cantMovStock = Counter.builder("Movimientos_Stock").tag("Cantidad", "Total").description("Total de movimientos stock realizados.").register(meterRegistry);
+	}
+	
 
     @Override
     public MovimientosStock getMovimientoStockById(Integer id) throws MovimientosStockException {
@@ -74,9 +90,11 @@ public class MovimientoStockServiceImpl implements MovimientosStockService {
             throw new MovimientosStockNotFoundException("");
         }
         logger.debug("saveMovimientoStock(): Guardando el MovimientosStock: " + ms);
-        //TODO hay que guardar el Material también? Si no hay material o no está en la BD se laza una excepción y el controller responde 422 Unprocessable Entity.
         //Este método se supone que actualiza solo los valores que no son null (hace merge) si la entidad existe en la BD, pero no me estaba andando.
-        return movimientosStockRepository.save(ms);
+        
+        MovimientosStock movStock = movimientosStockRepository.save(ms);
+        cantMovStock.increment();
+        return movStock;
     }
 
     @Override

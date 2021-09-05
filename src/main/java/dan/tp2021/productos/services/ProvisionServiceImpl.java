@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import dan.tp2021.productos.domain.DetalleProvision;
 import dan.tp2021.productos.domain.Provision;
 import dan.tp2021.productos.exeptions.provision.ProvisionException;
 import dan.tp2021.productos.exeptions.provision.ProvisionNotFoundException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 
 @Service
 public class ProvisionServiceImpl implements ProvisionService {
@@ -24,6 +28,16 @@ public class ProvisionServiceImpl implements ProvisionService {
 
 	@Autowired
 	ProvisionRepository provisionRepository;
+
+	@Autowired
+	MeterRegistry meterRegistry;
+	
+	private Counter totalProvisiones;
+	
+	@PostConstruct
+	private void inicializarContadores() {
+		totalProvisiones = Counter.builder("provision").tag("Cantidad", "Total").description("Total de provisiones solicitadas.").register(meterRegistry);
+	}
 	
 	@Override
 	public Provision getProvisionById(Integer id) throws ProvisionException {
@@ -57,7 +71,11 @@ public class ProvisionServiceImpl implements ProvisionService {
 			p.setFechaProvision(Instant.now());
 		}
 		logger.debug("saveProvision(): Guardando la provisión: " + p);
-		return provisionRepository.save(p);
+		
+		Provision  aux = provisionRepository.save(p);
+		
+		totalProvisiones.increment();
+		return aux;
 	}
 
 	@Override
